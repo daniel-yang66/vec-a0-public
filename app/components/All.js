@@ -87,7 +87,6 @@ export default function All({ flightNo, route }) {
     ) {
       return stationRef.current[airport].weather;
     }
-    console.log(airport);
     // console.log("hellostation");
     const stationInfo = await AirportWeather(airport);
     const name = stationInfo.latest.info.city;

@@ -22,6 +22,7 @@ import { ConvertWind } from "../utils/ConvertWeather";
 import { loadUsBundledAirspace } from "@squawk/airspace-data/browser";
 import { createAirspaceResolver } from "@squawk/airspace/browser";
 import "../globals.css";
+import { Notify } from "../utils/Toast";
 
 export default memo(function Map({
   flight,
@@ -354,6 +355,7 @@ export default memo(function Map({
         end,
       );
     } else {
+      Notify("Position info unavailable", "err");
       setWinds(newWinds[0] ? newWinds[0] : { data: null, alt: null });
     }
   }, [flight]);
@@ -966,8 +968,8 @@ export default memo(function Map({
     if (lastFlightId.current !== flight.flight_icao) {
       map.current.flyTo({
         center: [
-          planeCoords.lon ? planeCoords.lon : depCoords.lon,
-          planeCoords.lon ? planeCoords.lat : depCoords.lat,
+          planeCoords ? planeCoords.lon : depCoords.lon,
+          planeCoords ? planeCoords.lat : depCoords.lat,
         ],
         speed: 0.5,
         zoom: 5,
