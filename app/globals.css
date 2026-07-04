@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+.Toastify__toast {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.transparent-popup .maplibregl-popup-content {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  pointer-events: none;
+}
+.transparent-popup .maplibregl-popup-tip {
+  display: none !important;
+}
+
+.airport-label {
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none;
+  font-family: sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: oklch(79.775% 0.09027 252.468);
+}
+
+.adv-label {
+  border: none;
+  box-shadow: none;
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+}
+
+.pirep-lgt {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 16px solid oklch(79.2% 0.209 151.711);
+}
+
+.pirep-mod {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 16px solid oklch(75% 0.183 55.934);
+}
+
+.pirep-sev {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 16px solid oklch(70.4% 0.191 22.216);
+}
+
+.rwy-label {
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: oklch(83.7% 0.128 66.29);
+}
+
+.dep-pin {
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: oklch(70.7% 0.165 254.624);
+}
+.arr-pin {
+  border-radius: 50%;
+  background-color: oklch(79.5% 0.184 86.047);
+  width: 12px;
+  height: 12px;
+}
+
+.asig {
+  height: 16px;
+  width: 16px;
+  background-color: orange;
+}
+
+.traffic {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 16px solid oklch(70.7% 0.165 254.624);
+}
+.wind-low {
+  background-image: url("/wind-low.png");
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.wind-low-mid {
+  background-image: url("/wind-low-mid.png");
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.wind-mid {
+  background-image: url("/wind-mid.png");
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.wind-high-mid {
+  background-image: url("/wind-high-mid.png");
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.wind-high {
+  background-image: url("/wind-high.png");
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+
+.plane-pin {
+  background-image: url("/plane.png");
+  width: 70px;
+  height: 70px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+
+.altitude {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 11px solid oklch(96.7% 0.067 122.328);
+}
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 11px solid oklch(96.7% 0.067 122.328);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+  background-color: oklch(93.2% 0.032 255.585);
+  border-radius: 25px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: oklch(54.6% 0.245 262.881);
+  border-radius: 25px;
+  margin-top: 4px;
+}

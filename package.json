@@ -1,0 +1,43 @@
+{
+  "name": "thrust-track",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@maptiler/sdk": "^3.11.1",
+    "@maptiler/weather": "^3.1.1",
+    "@squawk/airspace": "^0.8.0",
+    "@squawk/airspace-data": "^0.5.8",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@turf/turf": "^7.3.1",
+    "@webgeodatavore/geojson.terminator": "^1.0.2",
+    "appwrite": "^21.5.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.26",
+    "geomagnetism": "^0.2.0",
+    "luxon": "^3.5.0",
+    "next": "^16.1.1",
+    "postcss": "^8.5.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.5",
+    "recharts": "^3.8.1",
+    "sunrise-sunset-js": "^2.2.1",
+    "tailwindcss": "^4.1.18",
+    "tz-lookup": "^6.1.25",
+    "use-debounce": "^10.0.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.7"
+  }
+}
