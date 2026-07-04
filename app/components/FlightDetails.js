@@ -252,7 +252,9 @@ export default function FlightDetails({
                 }
                 unit={unit}
                 targetTime={
-                  airport === "dep" ? flight.dep_time_utc : flight.arr_time_utc
+                  airport === "dep"
+                    ? String(flight.dep_time_utc).replace(" ", "T") + ":00Z"
+                    : String(flight.arr_time_utc).replace(" ", "T") + ":00Z"
                 }
               />
             )}
