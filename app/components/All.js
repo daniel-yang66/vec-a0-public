@@ -114,8 +114,8 @@ export default function All({ flightNo, route }) {
         depWx.latest.info.longitude,
       );
       const dstTz = tz_lookup(
-        depWx.latest.info.latitude,
-        depWx.latest.info.longitude,
+        arrWx.latest.info.latitude,
+        arrWx.latest.info.longitude,
       );
 
       setStationData({

@@ -142,7 +142,7 @@ export default memo(function Map({
         const airsp = resolver.query({
           lat: flight.lat,
           lon: flight.lng,
-          altitudeFt: flight.alt < 0 ? 0 : flight.alt * 100,
+          altitudeFt: flight.alt < 0 ? 0 : flight.alt * 3.28,
         });
 
         setAirspace(airsp);
