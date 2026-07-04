@@ -319,7 +319,7 @@ export default function General({ stationData, unit, targetTime }) {
                       <p className="absolute top-1 left-1 text-sm text-slate-400">
                         Wind
                       </p>
-                      <p className="text-[15px]">{`${wind.wg !== "--" ? `${wind.ws ? wind.ws : "--"}/${wind.wg ? wind.wg : "--"}` : `${wind.ws ? wind.ws : "--"}`} ${unit === "av" || unit === "imp" ? (unit === "av" ? "kt" : "mph") : "kph"}, ${period.wind_direction && period.wind_direction.repr === "VRB" ? "VRB" : period.wind_direction.value ? `${period.wind_direction.value}\xB0` : "--"}`}</p>
+                      <p className="text-[15px]">{`${wind.wg !== "--" ? `${wind.ws ? wind.ws : "--"}/${wind.wg ? wind.wg : "--"}` : `${wind.ws ? wind.ws : "--"}`} ${unit === "av" || unit === "imp" ? (unit === "av" ? "kt" : "mph") : "kph"}, ${period.wind_direction && period.wind_direction.repr === "VRB" ? "VRB" : period.wind_direction && period.wind_direction.value ? `${period.wind_direction.value}\xB0` : "--"}`}</p>
                       {period.wind_direction &&
                       period.wind_direction.repr == "VRB" ? (
                         <TbArrowsRandom
