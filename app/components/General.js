@@ -178,7 +178,7 @@ export default function General({ stationData, unit, targetTime }) {
                     ></span>
                     <p className="text-sm">{stationData.wx.flight_rules}</p>
                   </div>
-                  <p>{`${unit === "imp" || unit === "av" || wxSummary.summary.ceiling === "--" ? wxSummary.summary.ceiling : wxSummary.summary.ceiling * 0.3048} ${unit === "imp" || unit === "av" ? "ft" : "m"} / ${ConvertVis(stationData.wx.visibility.value)} ${unit === "met" ? "km" : "sm"}`}</p>
+                  <p>{`${(unit === "imp" || unit === "av" || wxSummary.summary.ceiling === "--" ? wxSummary.summary.ceiling : Number(wxSummary.summary.ceiling.replace(",", "")) * 0.3048).toLocaleString()} ${unit === "imp" || unit === "av" ? "ft" : "m"} / ${ConvertVis(stationData.wx.visibility.value, stationData.wx.units.visibility, unit)} ${unit === "met" ? "km" : "sm"}`}</p>
                 </div>
                 <div className="relative h-14 w-full px-2 rounded-lg flex items-end bg-blue-900 overflow-auto">
                   <p className="absolute top-1 left-1 text-sm text-slate-400">
@@ -312,7 +312,7 @@ export default function General({ stationData, unit, targetTime }) {
                         ></span>
                         <p className="text-sm">{period.flight_rules}</p>
                       </div>
-                      <p>{`${unit === "imp" || unit === "av" || summary.ceiling === "--" ? summary.ceiling : summary.ceiling * 0.3048} ${unit === "imp" || unit === "av" ? "ft" : "m"} / ${period.visibility ? period.visibility.repr : "--"}`}</p>
+                      <p>{`${unit === "imp" || unit === "av" || summary.ceiling === "--" ? summary.ceiling : Number(summary.ceiling.replace(",", "")) * 0.3048} ${unit === "imp" || unit === "av" ? "ft" : "m"} / ${period.visibility ? period.visibility.repr : "--"} ${stationData.wx.units.visibility}`}</p>
                     </div>
 
                     <div className="relative h-14 w-full px-2 rounded-lg flex gap-2 items-end bg-blue-900">

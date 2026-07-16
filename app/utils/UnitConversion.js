@@ -23,15 +23,17 @@ export function ConvertDist(unit, val) {
     : Math.round(val * 1.61);
 }
 
-export function ConvertVis(vis, wUnit, unit) {
+export function ConvertVis(vis, vUnit, unit) {
   if (vis === "--" || !vis) return "--";
-  if ((wUnit === "km") & (unit === "imp" || unit === "av")) {
+  if (vis === 9999) {
+    vis = 9999;
+  } else if ((vUnit === "km") & (unit === "imp" || unit === "av")) {
     vis = Math.round(vis * 0.621);
-  } else if ((wUnit === "m") & (unit === "imp" || unit === "av")) {
+  } else if ((vUnit === "m") & (unit === "imp" || unit === "av")) {
     vis = Math.round(vis * 0.000621);
-  } else if ((wUnit === "m") & (unit === "met")) {
+  } else if ((vUnit === "m") & (unit === "met")) {
     vis = Math.round(vis * 1000);
-  } else if ((wUnit === "sm") & (unit === "met")) {
+  } else if ((vUnit === "sm") & (unit === "met")) {
     vis = Math.round(vis * 1.61);
   }
 

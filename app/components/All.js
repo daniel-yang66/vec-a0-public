@@ -452,7 +452,7 @@ export default function All({ flightNo, route }) {
       <h1
         className={`absolute top-[50vh] left-[50vw] -translate-x-1/2 -translate-y-1/2 grid gap-2 justify-items-center font-bold text-blue-300 text-[30px] md:text-[37px]`}
       >
-        No Flights
+        No Active Flights
       </h1>
     );
   }

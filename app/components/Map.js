@@ -317,6 +317,9 @@ export default memo(function Map({
         }
       });
     }
+    if (!flight.lng || !flight.lat) {
+      Notify("Position info unavailable", "err");
+    }
     if (newWinds.length === 0 && flight.alt && flight.lng && flight.lat) {
       let windsAloftCoords = [];
       const originPoint = point([flight.lng, flight.lat]);
@@ -355,7 +358,6 @@ export default memo(function Map({
         end,
       );
     } else {
-      Notify("Position info unavailable", "err");
       setWinds(newWinds[0] ? newWinds[0] : { data: null, alt: null });
     }
   }, [flight]);
