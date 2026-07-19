@@ -53,7 +53,10 @@ export function ConvertWeather(clouds, codes, info, tz, time) {
   );
 
   clouds.some((cloud) => {
-    if (cloud.type === "BKN" || cloud.type === "OVC" || cloud.type === "VV") {
+    if (
+      (cloud.type === "BKN" || cloud.type === "OVC" || cloud.type === "VV") &&
+      cloud.altitude
+    ) {
       ceiling = Math.round(cloud.altitude * 100).toLocaleString();
       return true;
     }
