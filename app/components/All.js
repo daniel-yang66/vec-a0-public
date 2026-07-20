@@ -333,7 +333,7 @@ export default function All({ flightNo, route }) {
         <Gmt />
 
         <div
-          className={`flex w-[50vw] md:hidden phl:flex! items-center justify-self-center h-6 bg-slate-500 rounded-md relative mb-2`}
+          className={`flex w-[50vw] md:hidden items-center justify-self-center h-6 bg-slate-500 rounded-md relative mb-2`}
         >
           <motion.div
             className="absolute bg-linear-to-br from-slate-900 to-blue-700 rounded-md shadow-sm w-1/2 h-full"
