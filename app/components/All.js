@@ -421,7 +421,7 @@ export default function All({ flightNo, route }) {
             className={`
   ${
     type !== "map"
-      ? "max-sm:opacity-0 max-sm:max-h-0 max-sm:pointer-events-none phl:opacity-100! phl:max-h-none! phl:pointer-events-auto!"
+      ? "max-sm:opacity-0 max-sm:max-h-0 max-sm:pointer-events-none"
       : ""
   }
   relative overflow-hidden
