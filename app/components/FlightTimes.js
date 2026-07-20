@@ -17,7 +17,7 @@ export default function FlightTimes({ data, tz, wx }) {
 
   return (
     <section
-      className={`min-[768px]:h-[20vh] min-[1000px]:h-[28vh] min-[768px]:w-[48vw] min-[1000px]:w-[40vw] flex flex-col gap-2 flex gap-4 text-sm md:text-md md:mr-2 text-slate-300 overflow-auto`}
+      className={`min-[768px]:h-[20vh] min-[1000px]:h-[28vh] lmd:h-auto! lmd:flex-1 min-[768px]:w-[48vw] min-[1000px]:w-[40vw] lmd:w-full! flex flex-col gap-2 flex gap-4 text-sm md:text-md md:mr-2 text-slate-300 overflow-auto`}
     >
       <div className="h-full p-2 rounded-lg flex flex-col gap-2 bg-blue-900 overflow-hidden">
         <div className="flex items-center justify-between">

@@ -76,7 +76,7 @@ export default function FlightSummary({ data, weather, tz, unit }) {
   if (data && (weather ? weather.origin || weather.destination : false)) {
     return (
       <section
-        className={`relative grid justify-items-center h-[26vh] min-[768px]:h-[20vh] min-[1000px]:h-[28vh] min-[768px]:w-[51vw] min-[1000px]:w-[38vw] bg-linear-to-br from-slate-950 to-blue-900 rounded-lg p-2 border-2 border-solid border-blue-900 text-slate-300`}
+        className={`relative grid justify-items-center h-[23vh] min-[768px]:h-[20vh] min-[1000px]:h-[28vh] lmd:h-[25vh]! min-[768px]:w-[51vw] min-[1000px]:w-[38vw] lmd:w-full! bg-linear-to-br from-slate-950 to-blue-900 rounded-lg p-2 border-2 border-solid border-blue-900 text-slate-300`}
       >
         <p className={`absolute top-1 left-1 text-blue-400 text-sm md:text-lg`}>
           {airline.name}
@@ -94,7 +94,7 @@ export default function FlightSummary({ data, weather, tz, unit }) {
           className={`text-blue-400 text-[30px] md:text-[35px]`}
         />
 
-        <div className="w-[335px] flex justify-between -mt-4 md:mt-0">
+        <div className="w-[335px] flex justify-between -mb-4 md:-mb-8">
           <div className="inline-flex items-top">
             {symbols ? symbols.origin : <></>}
             <p className="text-[14px] font-semibold">{`${ConvertTemp(unit, weather.origin.latest.temperature.value)}\xB0${unit === "met" || unit === "av" ? weather.origin.latest.units.temperature : "F"}`}</p>
@@ -132,7 +132,7 @@ export default function FlightSummary({ data, weather, tz, unit }) {
           <circle cx={290} cy={60} r={7} fill={"oklch(79.5% 0.184 86.047)"} />
         </svg>
 
-        <div className={`w-[320px] flex justify-between`}>
+        <div className={`w-[320px] flex justify-between -mt-4`}>
           <div className="grid justify-items-start">
             <p className="text-lg md:text-2xl">
               {data.dep_iata ? data.dep_iata : data.dep_icao}
@@ -143,7 +143,7 @@ export default function FlightSummary({ data, weather, tz, unit }) {
             <p className="text-[15px]">{`${progress.rem} left`}</p>
           </div>
           <div className="grid justify-items-end">
-            <p className=" text-lg md:text-2xl">
+            <p className="mr-4 text-lg md:text-2xl">
               {data.arr_iata ? data.arr_iata : data.arr_icao}
             </p>
           </div>{" "}

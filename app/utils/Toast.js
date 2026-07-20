@@ -7,7 +7,7 @@ function Message(text, type) {
   return (
     <div
       className={` ${
-        type === "err" ? "bg-red-500" : "bg-emerald-500"
+        type === "err" ? "bg-orange-500" : "bg-emerald-500"
       } rounded-lg overflow-auto flex gap-2 items-center justify-center text-md font-bold text-slate-200 p-2 w-full`}
     >
       {type === "err" ? <MdErrorOutline /> : <LuCheck />}

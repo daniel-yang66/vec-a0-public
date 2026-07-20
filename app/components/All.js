@@ -333,7 +333,7 @@ export default function All({ flightNo, route }) {
         <Gmt />
 
         <div
-          className={`flex w-[50vw] md:hidden items-center justify-self-center h-6 bg-slate-500 rounded-md relative mb-2`}
+          className={`flex w-[50vw] md:hidden phl:flex! items-center justify-self-center h-6 bg-slate-500 rounded-md relative mb-2`}
         >
           <motion.div
             className="absolute bg-linear-to-br from-slate-900 to-blue-700 rounded-md shadow-sm w-1/2 h-full"
@@ -366,84 +366,86 @@ export default function All({ flightNo, route }) {
             <h2>Info</h2>
           </div>
         </div>
-
-        <div
-          className={`${
-            type === "map" ? "max-sm:hidden" : ""
-          } h-[55h] min-[768px]:h-[28vh] min-[1000px]:h-[39vh] w-[98vw] flex flex-col gap-[2vh] overflow-auto`}
-        >
+        <div className="flex flex-col gap-[2vh] lmd:flex-row lmd:items-start lmd:gap-[1vw]">
           <div
-            onClick={() => setSettingsClose(false)}
-            className="flex gap-2 items-center justify-center rounded-lg bg-blue-400 w-24 h-8"
+            className={`${
+              type === "map" ? "max-sm:hidden" : ""
+            } h-[55vh] min-[768px]:h-[28vh] min-[1000px]:h-[39vh] lmd:h-[80vh]! lmd:w-[38vw]! w-[98vw] flex flex-col gap-[2vh] overflow-auto`}
           >
-            <IoMdSettings className="text-[20px] text-blue-900" />
-            <p className="text-slate-900 text-md font-semibold">Settings</p>
-          </div>
-          <div className="flex flex-col md:flex-row  gap-4">
-            <FlightSummary
-              data={flight}
-              weather={stationData ? stationData.weather : null}
-              tz={stationData ? stationData.tz : null}
+            <div
+              onClick={() => setSettingsClose(false)}
+              className="flex gap-2 items-center justify-center rounded-lg bg-blue-400 w-24 h-8"
+            >
+              <IoMdSettings className="text-[20px] text-blue-900" />
+              <p className="text-slate-900 text-md font-semibold">Settings</p>
+            </div>
+            <div className="flex flex-col md:flex-row lmd:flex-col! gap-4">
+              <FlightSummary
+                data={flight}
+                weather={stationData ? stationData.weather : null}
+                tz={stationData ? stationData.tz : null}
+                unit={settings.unit}
+              />
+
+              <FlightTimes
+                data={flight}
+                tz={stationData ? stationData.tz : null}
+                wx={stationData ? stationData.weather : null}
+              />
+            </div>
+            <FlightDetails
               unit={settings.unit}
-            />
-
-            <FlightTimes
-              data={flight}
-              tz={stationData ? stationData.tz : null}
-              wx={stationData ? stationData.weather : null}
-            />
-          </div>
-          <FlightDetails
-            unit={settings.unit}
-            flight={flight}
-            onSetDetails={setDetails}
-            details={details}
-            flightNo={flightNo}
-            route={route}
-            stationData={stationData}
-            dark={settings.dark}
-            refreshTracker={refreshTracker}
-          />
-          {!settingsClose ? (
-            <Settings
-              autoRefresh={autoRefresh}
-              settings={settings}
-              onSetSettings={setSettings}
+              flight={flight}
+              onSetDetails={setDetails}
+              details={details}
+              flightNo={flightNo}
+              route={route}
+              stationData={stationData}
               dark={settings.dark}
-              onSetSettingsClose={setSettingsClose}
+              refreshTracker={refreshTracker}
             />
-          ) : (
-            <></>
-          )}
-        </div>
+            {!settingsClose ? (
+              <Settings
+                autoRefresh={autoRefresh}
+                settings={settings}
+                onSetSettings={setSettings}
+                dark={settings.dark}
+                onSetSettingsClose={setSettingsClose}
+              />
+            ) : (
+              <></>
+            )}
+          </div>
 
-        <div
-          className={`
+          <div
+            className={`
   ${
     type !== "map"
-      ? "max-sm:opacity-0 max-sm:max-h-0 max-sm:pointer-events-none"
+      ? "max-sm:opacity-0 max-sm:max-h-0 max-sm:pointer-events-none phl:opacity-100! phl:max-h-none! phl:pointer-events-auto!"
       : ""
   }
   relative overflow-hidden
   rounded-lg w-[98vw] h-[75vh] min-[768px]:h-[53vh] min-[1000px]:h-[45vh]
+  lmd:w-[58vw]! lmd:h-[80vh]! lmd:mt-[calc(2rem+2vh)]
 `}
-        >
-          <ActiveFlights
-            data={existing}
-            current={flightNum}
-            onSetFlightNum={setFlightNum}
-          />
-          <Map
-            flight={flight}
-            details={details}
-            airports={stationData ? stationData.weather : null}
-            onSetDetails={setDetails}
-            onSetType={setType}
-            unit={settings.unit}
-            flightNo={flightNo}
-            route={route}
-            refreshTracker={refreshTracker}
-          />
+          >
+            <ActiveFlights
+              data={existing}
+              current={flightNum}
+              onSetFlightNum={setFlightNum}
+            />
+            <Map
+              flight={flight}
+              details={details}
+              airports={stationData ? stationData.weather : null}
+              onSetDetails={setDetails}
+              onSetType={setType}
+              unit={settings.unit}
+              flightNo={flightNo}
+              route={route}
+              refreshTracker={refreshTracker}
+            />
+          </div>
         </div>
       </div>
     );

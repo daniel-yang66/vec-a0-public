@@ -1046,14 +1046,14 @@ export default memo(function Map({
   }, [winds, lead, showWind, unit, done]);
 
   return (
-    <div>
+    <>
       <div
         id="map-container"
         ref={mapContainer}
-        className="rounded-lg w-[98vw] h-[75vh] min-[768px]:h-[53vh] min-[1000px]:h-[45vh]"
+        className="rounded-lg w-[98vw] h-[75vh] min-[768px]:h-[53vh] min-[1000px]:h-[45vh] lmd:w-[58vw]! lmd:h-[80vh]!"
       />
       {winds.data && winds.data.length > 0 && showWind === "on" ? (
-        <div className="absolute bottom-[5.5vh] md:bottom-1 left-[49vw] -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 items-center">
+        <div className="absolute bottom-[5.5vh] md:bottom-1 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 items-center">
           <p className="text-md text-blue-300 font-semibold">
             {lead === 0 ? "Winds Aloft: Now" : `Winds Aloft: +${lead}h`}
           </p>
@@ -1168,6 +1168,6 @@ export default memo(function Map({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 });
