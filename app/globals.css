@@ -6,7 +6,7 @@
   box-shadow: none !important;
 }
 
-.transparent-popup .maplibregl-popup-content {
+/* .transparent-popup .maplibregl-popup-content {
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
@@ -14,9 +14,22 @@
 }
 .transparent-popup .maplibregl-popup-tip {
   display: none !important;
+} */
+.mapboxgl-popup-content {
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none;
+  font-family: sans-serif;
+  font-size: 18x;
+  font-weight: 600;
+  color: oklch(70.7% 0.165 254.624);
 }
 
-.airport-label {
+.mapboxgl-popup-tip {
+  display: none;
+}
+
+/* .airport-label {
   background-color: transparent !important;
   border: none;
   box-shadow: none;
@@ -24,7 +37,7 @@
   font-size: 18px;
   font-weight: 600;
   color: oklch(79.775% 0.09027 252.468);
-}
+} */
 
 .adv-label {
   border: none;
@@ -155,6 +168,85 @@
   display: block;
   border: none;
   cursor: pointer;
+}
+
+.flight-popup .mapboxgl-popup-content {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.flight-popup .mapboxgl-popup-tip {
+  display: none;
+}
+.flight-popup .mapboxgl-popup-close-button {
+  top: 6px;
+  right: 8px;
+  font-size: 18px;
+  color: #94a3b8;
+  background: transparent;
+}
+.flt-card {
+  width: 230px;
+  color: #e2e8f0;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: inherit;
+}
+.flt-flex-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+.flt-flex-wrap-norm {
+  display: flex;
+  gap: -4px;
+}
+.flt-flex-wrap-norm:hover {
+  cursor: pointer;
+}
+.flt-action {
+  padding: 0 12px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #bfdbfe;
+}
+.flt-head {
+  padding: 10px 30px 2px 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+}
+.flt-route {
+  padding: 0 12px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #bfdbfe;
+}
+.flt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  padding: 8px 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  font-size: 13px;
+  font-weight: 600;
+}
+.flt-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+}
+.flt-foot {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 .altitude {

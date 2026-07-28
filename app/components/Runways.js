@@ -1,7 +1,9 @@
 "use client";
 
-import * as maptilersdk from "@maptiler/sdk";
-import "@maptiler/sdk/dist/maptiler-sdk.css";
+// import * as mapboxgl from "@maptiler/sdk";
+// import "@maptiler/sdk/dist/maptiler-sdk.css";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { useRef, useEffect, useState } from "react";
 import { LuArrowUp } from "react-icons/lu";
 import { IoIosArrowForward } from "react-icons/io";
@@ -29,27 +31,53 @@ export default function Runways({ info, runways, unit }) {
     }
   };
 
-  useEffect(() => {
-    if (map.current) return;
-    maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_TILER_TOKEN;
+  // useEffect(() => {
+  //   if (map.current) return;
+  //   mapboxgl.config.apiKey = process.env.NEXT_PUBLIC_TILER_TOKEN;
 
-    map.current = new maptilersdk.Map({
+  //   map.current = new mapboxgl.Map({
+  //     container: mapContainer.current,
+  //     style: mapboxgl.MapStyle.TOPO_V4.DARK,
+  //     center: [-114, 33],
+  //     zoom: 2,
+  //     navigationControl: false,
+  //     geolocateControl: false,
+  //     scaleControl: false,
+  //   });
+
+  //   map.current.on("load", () => {
+  //     setDone(true);
+  //   });
+
+  //   return () => {
+  //     map.current.remove();
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    if (map.current || !mapContainer.current) return;
+    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+    map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: maptilersdk.MapStyle.TOPO_V4.DARK,
+      style: "mapbox://styles/mapbox/dark-v11",
+      projection: "globe",
       center: [-114, 33],
-      zoom: 2,
-      navigationControl: false,
-      geolocateControl: false,
-      scaleControl: false,
+      zoom: 1.4,
+      attributionControl: true,
     });
 
+    map.current.on("style.load", () => {
+      map.current.setFog({
+        color: "rgb(13, 20, 40)",
+        "high-color": "rgb(36, 60, 120)",
+        "horizon-blend": 0.02,
+        "space-color": "rgb(5, 8, 20)",
+        "star-intensity": 0.4,
+      });
+    });
     map.current.on("load", () => {
       setDone(true);
     });
-
-    return () => {
-      map.current.remove();
-    };
   }, []);
 
   useEffect(() => {
@@ -79,26 +107,30 @@ export default function Runways({ info, runways, unit }) {
       ) {
         sources.current += 1;
 
-        const popupLe = new maptilersdk.Popup({
+        const popupLe = new mapboxgl.Popup({
           closeButton: false,
           closeOnClick: false,
-          className: "transparent-popup",
+
           offset: [0, -18],
           anchor: "bottom",
         })
           .setLngLat([rwy.le_longitude_deg, rwy.le_latitude_deg])
-          .setHTML(`<div class="rwy-label">${rwy.le_ident}</div>`)
+          .setHTML(
+            `<div  className="mapboxgl-popup-content mapbox-popup-tip">${rwy.le_ident}</div>`,
+          )
           .addTo(map.current);
 
-        const popupHe = new maptilersdk.Popup({
+        const popupHe = new mapboxgl.Popup({
           closeButton: false,
           closeOnClick: false,
-          className: "transparent-popup",
+
           offset: [0, -18],
           anchor: "bottom",
         })
           .setLngLat([rwy.he_longitude_deg, rwy.he_latitude_deg])
-          .setHTML(`<div class="rwy-label">${rwy.he_ident}</div>`)
+          .setHTML(
+            `<div  className="mapboxgl-popup-content mapbox-popup-tip">${rwy.he_ident}</div>`,
+          )
           .addTo(map.current);
         popups.current = [...popups.current, popupHe, popupLe];
 

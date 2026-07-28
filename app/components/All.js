@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { point, buffer, bbox } from "@turf/turf";
 import Loading from "./Loading";
 import Map from "./Map";
 import ActiveFlights from "./ActiveFlights";
@@ -9,7 +8,7 @@ import FlightSummary from "./FlightSummary";
 import FlightTimes from "./FlightTimes";
 import AirportWeather from "../api/AirportWeather";
 import FlightDetails from "./FlightDetails";
-import NearbyFlts from "./NearbyFlights";
+import FlightStats from "./FlightStats";
 import Gmt from "./Gmt";
 import Settings from "./Settings";
 import { motion } from "framer-motion";
@@ -17,7 +16,8 @@ import { Notify } from "../utils/Toast";
 import { GetTimeOfDay } from "../utils/General";
 import { RetrieveLocation } from "../utils/GetLocation";
 import { IoMdSettings } from "react-icons/io";
-import NearbyFlights from "../api/ProximityFlights";
+import WorldFlights from "../api/WorldFlights";
+import GlobeMap from "./FlightGlobe";
 import RealTime from "../api/Flights";
 import tz_lookup from "tz-lookup";
 
@@ -29,7 +29,7 @@ export default function All({ flightNo, route }) {
   const [stationData, setStationData] = useState();
   const [details, setDetails] = useState("off");
   const [userCoords, setUserCoords] = useState();
-  const [nearbyFlights, setNearbyFlights] = useState();
+  const [worldFlights, setWorldFlights] = useState();
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState({
     unit: "av",
@@ -66,14 +66,14 @@ export default function All({ flightNo, route }) {
     }
   };
 
-  async function GetNearbyFlights(lat1, lon1, lat2, lon2) {
+  async function GetFlights() {
     try {
       if (!autoRefresh.current) {
         startLoading();
       }
 
-      const flights = await NearbyFlights(lat1, lon1, lat2, lon2);
-      setNearbyFlights(flights);
+      const flights = await WorldFlights();
+      setWorldFlights(flights);
     } catch {
       return;
     } finally {
@@ -171,10 +171,7 @@ export default function All({ flightNo, route }) {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserCoords({ lat: latitude, lon: longitude });
-          const center = point([longitude, latitude]);
-          const buffered = buffer(center, 100, { units: "nauticalmiles" });
-          const [minLon, minLat, maxLon, maxLat] = bbox(buffered);
-          GetNearbyFlights(minLat, minLon, maxLat, maxLon);
+          GetFlights();
         },
 
         (error) => {
@@ -232,11 +229,8 @@ export default function All({ flightNo, route }) {
         autoRefresh.current = true;
         refreshTracker.current += 1;
         GetData(param.current.flt, param.current.rt);
-        if (!flightNo && !route && userCoords) {
-          const center = point([userCoords.lon, userCoords.lat]);
-          const buffered = buffer(center, 100, { units: "nauticalmiles" });
-          const [minLon, minLat, maxLon, maxLat] = bbox(buffered);
-          GetNearbyFlights(minLat, minLon, maxLat, maxLon);
+        if (!flightNo && !route) {
+          GetFlights();
         }
       }
     }, 60000);
@@ -275,32 +269,33 @@ export default function All({ flightNo, route }) {
   if (loading) {
     return <Loading />;
   } else if (!flightNo && !route) {
-    return nearbyFlights && nearbyFlights.length > 0 ? (
-      <div
-        className={`grid gap-4 justify-items-center font-bold text-blue-300`}
-      >
-        <div className="grid justify-items-center gap-2">
-          <h1 className="text-[30px] md:text-[37px]">{`Good ${GetTimeOfDay()}`}</h1>
-          <h2 className="text-[23px] md:text-[30px]">Welcome to VecA0</h2>
+    const flights = worldFlights || [];
+    return (
+      <div className="items-center flex h-[calc(100svh-6rem)] w-full max-w-[1800px] flex-col gap-3 px-2">
+        <div className="grid shrink-0 justify-items-center gap-2 font-bold text-blue-300">
+          <h1 className="text-[26px] md:text-[33px]">{`Good ${GetTimeOfDay()}`}</h1>
+          <h2 className="text-[19px] md:text-[26px]">Welcome to VecA0</h2>
           <div
             onClick={() => setSettingsClose(false)}
-            className="flex gap-2 items-center justify-center rounded-lg bg-blue-400 w-24 h-8"
+            className="flex h-8 w-24 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-400"
           >
             <IoMdSettings className="text-[20px] text-blue-900" />
-            <p className="text-slate-900 text-md font-semibold">Settings</p>
+            <p className="text-md font-semibold text-slate-900">Settings</p>
           </div>
         </div>
-        <div className="flex flex-col gap-2 items-center">
-          <h3 className="text-[25px] text-blue-300 font-semibold">
-            Nearby Flights
-          </h3>
-          <NearbyFlts
-            flights={nearbyFlights}
-            unit={settings.unit}
-            coords={userCoords}
-          />
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pb-2 md:flex-row md:overflow-hidden">
+          <div className="shrink-0 overflow-y-auto w-[90vw] md:w-[35vw] h-[30vh] md:h-[65vh]">
+            <FlightStats flights={flights} />
+          </div>
+          <div className="h-[40vh] md:h-[65vh] shrink-0 overflow-hidden md:flex-1 w-[90vw] md:w-[60vw]">
+            <GlobeMap
+              flights={flights}
+              userCoords={userCoords}
+              unit={settings.unit}
+            />
+          </div>
         </div>
-        {!settingsClose ? (
+        {!settingsClose && (
           <Settings
             autoRefresh={autoRefresh}
             settings={settings}
@@ -308,23 +303,7 @@ export default function All({ flightNo, route }) {
             dark={settings.dark}
             onSetSettingsClose={setSettingsClose}
           />
-        ) : (
-          <></>
         )}
-      </div>
-    ) : (
-      <div
-        className={`md:absolute md:top-[50vh] md:left-[50vw] md:-translate-x-1/2 md:-translate-y-1/2 grid gap-2 justify-items-center font-bold text-blue-300`}
-      >
-        <h1 className="text-[30px] md:text-[37px]">{`Good ${GetTimeOfDay()}`}</h1>
-        <h2 className="text-[23px] md:text-[30px]">Welcome to VecA0</h2>
-        <div
-          onClick={() => setSettingsClose(false)}
-          className="flex gap-2 items-center justify-center rounded-lg bg-blue-400 w-24 h-8"
-        >
-          <IoMdSettings className="text-[20px] text-blue-900" />
-          <p className="text-slate-900 text-md font-semibold">Settings</p>
-        </div>
       </div>
     );
   } else if (existing.length > 0 || flight) {

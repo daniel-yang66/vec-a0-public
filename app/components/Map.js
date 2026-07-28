@@ -1,8 +1,9 @@
 "use client";
-
-import * as maptilersdk from "@maptiler/sdk";
-import { RadarLayer, WindLayer, TemperatureLayer } from "@maptiler/weather";
-import "@maptiler/sdk/dist/maptiler-sdk.css";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+// import * as mapboxgl from "@maptiler/sdk";
+// import { RadarLayer, WindLayer, TemperatureLayer } from "@maptiler/weather";
+// import "@maptiler/sdk/dist/maptiler-sdk.css";
 import { useRef, useEffect, useState, memo } from "react";
 import { greatCircle, point, buffer, bbox, coordAll } from "@turf/turf";
 import { DateTime } from "luxon";
@@ -41,7 +42,7 @@ export default memo(function Map({
   const aSigMarkers = useRef([]);
   const sigCounter = useRef(0);
   const airspMarkers = useRef([]);
-  const [activeWx, setActiveWx] = useState(null);
+  // const [activeWx, setActiveWx] = useState(null);
   const [advType, setAdvType] = useState();
   const [expand, setExpand] = useState(false);
   const [done, setDone] = useState(false);
@@ -193,53 +194,79 @@ export default memo(function Map({
   function AddAsigMarker(coords, className, html) {
     const pin = document.createElement("div");
     pin.className = className;
-    const popup = new maptilersdk.Popup({
+    const popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnMove: false,
     }).setHTML(html);
-    const asMarker = new maptilersdk.Marker({ element: pin })
+    const asMarker = new mapboxgl.Marker({ element: pin })
       .setLngLat(coords)
       .setPopup(popup)
       .addTo(map.current);
     aSigMarkers.current.push(asMarker);
   }
 
-  function WeatherLayers(type, map) {
-    let layer;
-    if (!type) return;
-    else if (type === "rad") {
-      layer = new RadarLayer({ id: type, opacity: 0.55 });
-    } else if (type === "temp") {
-      layer = new TemperatureLayer({ id: type, opacity: 0.55 });
-    } else if (type === "wind") {
-      layer = new WindLayer({ id: type, opacity: 0.55 });
-    }
-    layer ? map.addLayer(layer) : "";
-  }
+  // function WeatherLayers(type, map) {
+  //   let layer;
+  //   if (!type) return;
+  //   else if (type === "rad") {
+  //     layer = new RadarLayer({ id: type, opacity: 0.55 });
+  //   } else if (type === "temp") {
+  //     layer = new TemperatureLayer({ id: type, opacity: 0.55 });
+  //   } else if (type === "wind") {
+  //     layer = new WindLayer({ id: type, opacity: 0.55 });
+  //   }
+  //   layer ? map.addLayer(layer) : "";
+  // }
 
   useEffect(() => {
-    if (map.current) return;
-    maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_TILER_TOKEN;
-
-    map.current = new maptilersdk.Map({
+    if (map.current || !mapContainer.current) return;
+    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+    map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: maptilersdk.MapStyle.TOPO_V4.DARK,
+      style: "mapbox://styles/mapbox/dark-v11",
+      projection: "globe",
       center: [-114, 33],
-      zoom: 2,
-      navigationControl: false,
-      geolocateControl: false,
-      scaleControl: false,
-      projectionControl: "bottom-right",
+      zoom: 1.4,
+      attributionControl: true,
     });
 
+    map.current.on("style.load", () => {
+      map.current.setFog({
+        color: "rgb(13, 20, 40)",
+        "high-color": "rgb(36, 60, 120)",
+        "horizon-blend": 0.02,
+        "space-color": "rgb(5, 8, 20)",
+        "star-intensity": 0.4,
+      });
+    });
     map.current.on("load", () => {
       setDone(true);
     });
-
-    return () => {
-      map.current.remove();
-    };
   }, []);
+
+  // useEffect(() => {
+  //   if (map.current) return;
+  //   mapboxgl.config.apiKey = process.env.NEXT_PUBLIC_TILER_TOKEN;
+
+  //   map.current = new mapboxgl.Map({
+  //     container: mapContainer.current,
+  //     style: mapboxgl.MapStyle.TOPO_V4.DARK,
+  //     center: [-114, 33],
+  //     zoom: 2,
+  //     navigationControl: false,
+  //     geolocateControl: false,
+  //     scaleControl: false,
+  //     projectionControl: "bottom-right",
+  //   });
+
+  //   map.current.on("load", () => {
+  //     setDone(true);
+  //   });
+
+  //   return () => {
+  //     map.current.remove();
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (!done) return;
@@ -271,16 +298,16 @@ export default memo(function Map({
     }
   }, [dayNight, done]);
 
-  useEffect(() => {
-    if (!done) return;
+  // useEffect(() => {
+  //   if (!done) return;
 
-    ["rad", "temp", "wind"].forEach((value) => {
-      if (!map.current.getLayer(value)) return;
-      map.current.removeLayer(value);
-    });
+  //   ["rad", "temp", "wind"].forEach((value) => {
+  //     if (!map.current.getLayer(value)) return;
+  //     map.current.removeLayer(value);
+  //   });
 
-    WeatherLayers(activeWx, map.current);
-  }, [activeWx]);
+  //   WeatherLayers(activeWx, map.current);
+  // }, [activeWx]);
 
   useEffect(() => {
     if (flight) {
@@ -421,7 +448,7 @@ export default memo(function Map({
               const pin = document.createElement("div");
               pin.className = "asig";
 
-              const aSigPopup = new maptilersdk.Popup({
+              const aSigPopup = new mapboxgl.Popup({
                 closeButton: false,
                 closeOnMove: false,
               }).setHTML(
@@ -456,14 +483,14 @@ export default memo(function Map({
 
               if (Array.isArray(item.coords[0])) {
                 item.coords.forEach((coords, i) => {
-                  const asMarker = new maptilersdk.Marker({ element: pin })
+                  const asMarker = new mapboxgl.Marker({ element: pin })
                     .setLngLat(coords.map((obj) => [+obj.lon, +obj.lat])[0])
                     .setPopup(aSigPopup)
                     .addTo(map.current);
                   aSigMarkers.current.push(asMarker);
                 });
               } else {
-                const asMarker = new maptilersdk.Marker({ element: pin })
+                const asMarker = new mapboxgl.Marker({ element: pin })
                   .setLngLat(item.coords.map((obj) => [+obj.lon, +obj.lat])[0])
                   .setPopup(aSigPopup)
                   .addTo(map.current);
@@ -531,7 +558,7 @@ export default memo(function Map({
               pin.className = "pirep-mod";
             }
 
-            const aSigPopup = new maptilersdk.Popup({
+            const aSigPopup = new mapboxgl.Popup({
               closeButton: false,
               closeOnMove: false,
             }).setHTML(
@@ -547,7 +574,7 @@ export default memo(function Map({
         </div>`,
             );
 
-            const asMarker = new maptilersdk.Marker({ element: pin })
+            const asMarker = new mapboxgl.Marker({ element: pin })
               .setLngLat([item.lon, item.lat])
               .setPopup(aSigPopup)
               .addTo(map.current);
@@ -784,7 +811,7 @@ export default memo(function Map({
         const pin = document.createElement("div");
         pin.className = "asig";
 
-        const airspPopup = new maptilersdk.Popup({
+        const airspPopup = new mapboxgl.Popup({
           closeButton: false,
           closeOnMove: false,
         }).setHTML(
@@ -817,7 +844,7 @@ export default memo(function Map({
         </div>`,
         );
 
-        const airspMarker = new maptilersdk.Marker({ element: pin })
+        const airspMarker = new mapboxgl.Marker({ element: pin })
           .setLngLat(item.boundary.coordinates[0][0])
           .setPopup(airspPopup)
           .addTo(map.current);
@@ -837,11 +864,6 @@ export default memo(function Map({
     if (map.current.getSource("route")) {
       map.current.removeLayer("route");
       map.current.removeSource("route");
-    }
-
-    if (map.current.getSource("gc")) {
-      map.current.removeLayer("gc");
-      map.current.removeSource("gc");
     }
 
     if (!flight || !airports) return;
@@ -873,35 +895,32 @@ export default memo(function Map({
     const planePin = document.createElement("div");
     planePin.className = "plane-pin";
 
-    const popupDep = new maptilersdk.Popup({
+    const popupDep = new mapboxgl.Popup({
       closeButton: false,
       closeOnMove: false,
       closeOnClick: false,
-      className: "transparent-popup",
 
       offset: 10,
     }).setHTML(
-      `<div class="airport-label">${flight.dep_city} (${flight.dep_iata ? flight.dep_iata : flight.dep_icao})</div>`,
+      `<div className="mapboxgl-popup-content mapboxgl-popup-tip">${flight.dep_city} (${flight.dep_iata ? flight.dep_iata : flight.dep_icao})</div>`,
     );
-    const popupArr = new maptilersdk.Popup({
+    const popupArr = new mapboxgl.Popup({
       closeButton: false,
       closeOnMove: false,
       closeOnClick: false,
-      className: "transparent-popup",
       offset: 10,
     }).setHTML(
-      `<div class="airport-label">${flight.arr_city} (${flight.arr_iata ? flight.arr_iata : flight.arr_icao})</div>`,
+      `<div className="mapboxgl-popup-content mapboxgl-popup-tip">${flight.arr_city} (${flight.arr_iata ? flight.arr_iata : flight.arr_icao})</div>`,
     );
     let popupAir, airMarker;
     if (flight.lat && flight.lng) {
-      popupAir = new maptilersdk.Popup({
+      popupAir = new mapboxgl.Popup({
         closeButton: false,
         closeOnMove: false,
         closeOnClick: false,
-        className: "transparent-popup",
         offset: 28,
       }).setHTML(
-        `<div class="airport-label">
+        `<div className="airport-label mapboxgl-popup-content mapboxgl-popup-tip">
         <p>${flight.flight_icao ? flight.flight_icao : "--"}</p>
         <p>${flight.aircraft_icao ? flight.aircraft_icao : "--"}</p>
         <div class="altitude">
@@ -914,7 +933,7 @@ export default memo(function Map({
         )}\xB0</p></div>`,
       );
 
-      airMarker = new maptilersdk.Marker({ element: planePin })
+      airMarker = new mapboxgl.Marker({ element: planePin })
         .setLngLat([
           planeCoords ? planeCoords.lon : depCoords.lon,
           planeCoords ? planeCoords.lat : depCoords.lat,
@@ -926,13 +945,13 @@ export default memo(function Map({
         .togglePopup();
     }
 
-    const depMarker = new maptilersdk.Marker({ element: depPin })
+    const depMarker = new mapboxgl.Marker({ element: depPin })
       .setLngLat([depCoords.lon, depCoords.lat])
       .setPopup(popupDep)
       .addTo(map.current)
       .togglePopup();
 
-    const arrMarker = new maptilersdk.Marker({ element: arrPin })
+    const arrMarker = new mapboxgl.Marker({ element: arrPin })
       .setLngLat([arrCoords.lon, arrCoords.lat])
       .setPopup(popupArr)
       .addTo(map.current)
@@ -947,21 +966,22 @@ export default memo(function Map({
       const line = greatCircle(originPoint, destPoint, {
         npoints: 200,
       });
-      map.current.addSource("gc", {
+
+      map.current.addSource("route", {
         type: "geojson",
         data: line,
       });
       map.current.addLayer({
-        id: "gc",
+        id: "route",
         type: "line",
-        source: "gc",
+        source: "route",
         layout: {
           "line-join": "round",
           "line-cap": "round",
         },
         paint: {
-          "line-color": "rgb(191, 191, 246)",
-          "line-width": 3,
+          "line-color": "lightskyblue",
+          "line-width": 2,
           "line-dasharray": [3, 2],
         },
       });
@@ -1013,10 +1033,13 @@ export default memo(function Map({
             "wind-mid",
             "wind-high-mid",
             "wind-high",
-          ].map(async (item, i) => {
+          ].map((item, i) => {
             if (!map.current.hasImage(item)) {
-              const image = await map.current.loadImage(`/${item}.png`);
-              map.current.addImage(item, image.data);
+              // const image = map.current.loadImage(`/${item}.png`);
+              // map.current.addImage(item, image.data);
+              map.current.loadImage(`/${item}.png`, (error, image) => {
+                map.current.addImage(item, image);
+              });
             }
           }),
         );
@@ -1097,7 +1120,7 @@ export default memo(function Map({
         </div>
 
         <div className={`${expand ? "" : "hidden"} flex flex-col gap-2`}>
-          <select
+          {/* <select
             onChange={(e) => setActiveWx(e.target.value)}
             className={`bg-blue-300 text-center text-slate-900 font-semibold rounded-lg hover:cursor-pointer px-2 text-sm`}
           >
@@ -1105,7 +1128,7 @@ export default memo(function Map({
             <option value={"rad"}>Radar</option>
             <option value={"temp"}>SFC Temp</option>
             <option value={"wind"}>SFC Wind</option>
-          </select>
+          </select> */}
           {winds.data && winds.data.length > 0 ? (
             <div
               onClick={() =>

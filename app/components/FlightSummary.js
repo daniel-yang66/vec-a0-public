@@ -94,7 +94,7 @@ export default function FlightSummary({ data, weather, tz, unit }) {
           className={`text-blue-400 text-[30px] md:text-[35px]`}
         />
 
-        <div className="w-[335px] flex justify-between -mb-4 md:-mb-8">
+        <div className="w-[335px] flex justify-between -mb-4 md:-mb-6">
           <div className="inline-flex items-top">
             {symbols ? symbols.origin : <></>}
             <p className="text-[14px] font-semibold">{`${ConvertTemp(unit, weather.origin.latest.temperature.value)}\xB0${unit === "met" || unit === "av" ? weather.origin.latest.units.temperature : "F"}`}</p>

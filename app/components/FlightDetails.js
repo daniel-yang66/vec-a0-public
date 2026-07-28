@@ -49,9 +49,12 @@ export default function FlightDetails({
     }
   }
 
-  async function GetAtisCharts(dep, arr) {
+  async function GetAtisCharts(dep, arr, refresh) {
     // console.log("helloatis");
-    startLoading();
+
+    if (!refresh) {
+      startLoading();
+    }
 
     try {
       try {
@@ -89,10 +92,12 @@ export default function FlightDetails({
       stopLoading();
     }
   }
-  async function GetNotam(dep, arr) {
+  async function GetNotam(dep, arr, refresh) {
     // console.log("hellonotam");
 
-    startLoading();
+    if (!refresh) {
+      startLoading();
+    }
 
     try {
       const notamDep = await Notam(dep);
@@ -130,12 +135,12 @@ export default function FlightDetails({
       refresh = true;
     }
     if (refresh) {
-      GetAtisCharts(flight.dep_icao, flight.arr_icao);
-      GetNotam(flight.dep_icao, flight.arr_icao);
+      GetAtisCharts(flight.dep_icao, flight.arr_icao, refresh);
+      GetNotam(flight.dep_icao, flight.arr_icao, refresh);
       refreshTrackerInternal.current = refreshTracker.current;
     } else {
       if (!charts || !atis) {
-        GetAtisCharts(flight.dep_icao, flight.arr_icao);
+        GetAtisCharts(flight.dep_icao, flight.arr_icao, refresh);
       }
 
       if (viewType === "notams" && !notams) {
