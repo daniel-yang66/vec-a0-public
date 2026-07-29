@@ -107,11 +107,13 @@ export default function Search() {
                   <div
                     key={i}
                     className={`grid hover:cursor-pointer hover:bg-slate-800 hover:text-slate-300 justify-items-center items-center bg-slate-300 w-full h-6 z-20 ${
-                      i == dropDownItems.length - 1
-                        ? "rounded-br-lg rounded-bl-lg"
-                        : i == 0
-                          ? "rounded-tr-lg rounded-tl-lg"
-                          : ""
+                      dropDownItems.length !== 1
+                        ? i == dropDownItems.length - 1
+                          ? "rounded-br-lg rounded-bl-lg"
+                          : i == 0
+                            ? "rounded-tr-lg rounded-tl-lg"
+                            : ""
+                        : "rounded-lg"
                     }`}
                     onMouseDown={(e) => {
                       e.preventDefault();
@@ -226,11 +228,13 @@ export default function Search() {
                   <div
                     key={i}
                     className={`grid hover:cursor-pointer hover:bg-slate-800 hover:text-slate-300 justify-items-center items-center bg-slate-300 w-full h-6 z-20 ${
-                      i == dropDownItems.length - 1
-                        ? "rounded-br-lg rounded-bl-lg"
-                        : i == 0
-                          ? "rounded-tr-lg rounded-tl-lg"
-                          : ""
+                      dropDownItems.length !== 1
+                        ? i == dropDownItems.length - 1
+                          ? "rounded-br-lg rounded-bl-lg"
+                          : i == 0
+                            ? "rounded-tr-lg rounded-tl-lg"
+                            : ""
+                        : "rounded-lg"
                     }`}
                     onMouseDown={(e) => {
                       e.preventDefault();

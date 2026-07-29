@@ -20,7 +20,7 @@
   border: none;
   box-shadow: none;
   font-family: sans-serif;
-  font-size: 18x;
+  font-size: 18px;
   font-weight: 600;
   color: oklch(70.7% 0.165 254.624);
 }
@@ -163,6 +163,46 @@
   background-image: url("/plane.png");
   width: 70px;
   height: 70px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.narrowbody-pin {
+  background-image: url("/narrowbody.png");
+  width: 60px;
+  height: 60px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.widebody-pin {
+  background-image: url("/widebody.png");
+  width: 60px;
+  height: 60px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.regional_jet-pin {
+  background-image: url("/regional_jet.png");
+  width: 60px;
+  height: 60px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  border: none;
+  cursor: pointer;
+}
+.jumbo_jet-pin {
+  background-image: url("/jumbo_jet.png");
+  width: 60px;
+  height: 60px;
   background-size: contain;
   background-repeat: no-repeat;
   display: block;

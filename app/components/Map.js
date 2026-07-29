@@ -24,6 +24,7 @@ import { loadUsBundledAirspace } from "@squawk/airspace-data/browser";
 import { createAirspaceResolver } from "@squawk/airspace/browser";
 import "../globals.css";
 import { Notify } from "../utils/Toast";
+import { AircraftType } from "../utils/General";
 
 export default memo(function Map({
   flight,
@@ -893,7 +894,7 @@ export default memo(function Map({
     arrPin.className = "arr-pin";
 
     const planePin = document.createElement("div");
-    planePin.className = "plane-pin";
+    planePin.className = `${AircraftType(flight.aircraft_icao)}-pin`;
 
     const popupDep = new mapboxgl.Popup({
       closeButton: false,
@@ -980,7 +981,7 @@ export default memo(function Map({
           "line-cap": "round",
         },
         paint: {
-          "line-color": "lightskyblue",
+          "line-color": "green",
           "line-width": 2,
           "line-dasharray": [3, 2],
         },
@@ -1035,8 +1036,6 @@ export default memo(function Map({
             "wind-high",
           ].map((item, i) => {
             if (!map.current.hasImage(item)) {
-              // const image = map.current.loadImage(`/${item}.png`);
-              // map.current.addImage(item, image.data);
               map.current.loadImage(`/${item}.png`, (error, image) => {
                 map.current.addImage(item, image);
               });

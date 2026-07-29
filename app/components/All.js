@@ -171,7 +171,6 @@ export default function All({ flightNo, route }) {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserCoords({ lat: latitude, lon: longitude });
-          GetFlights();
         },
 
         (error) => {
@@ -273,8 +272,8 @@ export default function All({ flightNo, route }) {
     return (
       <div className="items-center flex h-[calc(100svh-6rem)] w-full max-w-[1800px] flex-col gap-3 px-2">
         <div className="grid shrink-0 justify-items-center gap-2 font-bold text-blue-300">
-          <h1 className="text-[26px] md:text-[33px]">{`Good ${GetTimeOfDay()}`}</h1>
-          <h2 className="text-[19px] md:text-[26px]">Welcome to VecA0</h2>
+          <h1 className="text-[23px] md:text-[30px]">{`Good ${GetTimeOfDay()}`}</h1>
+          <h2 className="text-[16px] md:text-[23px]">Welcome to VecA0</h2>
           <div
             onClick={() => setSettingsClose(false)}
             className="flex h-8 w-24 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-400"
@@ -283,11 +282,11 @@ export default function All({ flightNo, route }) {
             <p className="text-md font-semibold text-slate-900">Settings</p>
           </div>
         </div>
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pb-2 md:flex-row md:overflow-hidden">
-          <div className="shrink-0 overflow-y-auto w-[90vw] md:w-[35vw] h-[30vh] md:h-[65vh]">
+        <div className="flex flex-1 flex-col gap-4 overflow-auto md:flex-row">
+          <div className="shrink-0 overflow-y-auto w-[90vw] md:w-[30vw] h-[30vh] md:h-[65vh]">
             <FlightStats flights={flights} />
           </div>
-          <div className="h-[40vh] md:h-[65vh] shrink-0 overflow-hidden md:flex-1 w-[90vw] md:w-[60vw]">
+          <div className="relative h-[40vh] md:h-[65vh] shrink-0 overflow-hidden md:flex-1 w-[90vw] md:w-[60vw]">
             <GlobeMap
               flights={flights}
               userCoords={userCoords}
