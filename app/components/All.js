@@ -180,6 +180,9 @@ export default function All({ flightNo, route }) {
     } else {
       return;
     }
+    if (!flightNo && !route) {
+      GetFlights();
+    }
 
     const savedUnit = localStorage.getItem("unit");
     const savedRefresh = localStorage.getItem("refresh");
