@@ -291,7 +291,7 @@ export default memo(function Map({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if ((Date.now() - lastWeatherRefresh.current) / 60000 >= 0.5) {
+      if ((Date.now() - lastWeatherRefresh.current) / 60000 >= 10) {
         isWeatherRefresh.current = true;
         setRefreshWeather(!refreshWeather);
         lastWeatherRefresh.current = Date.now();
