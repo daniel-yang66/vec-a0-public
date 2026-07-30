@@ -922,7 +922,7 @@ export default memo(function Map({
     arrPin.className = "arr-pin";
 
     const planePin = document.createElement("div");
-    planePin.className = `${AircraftType(flight.aircraft_icao)}-pin`;
+    planePin.className = `${AircraftType(flight.aircraft_icao || 'N/A')}-pin`;
 
     const popupDep = new mapboxgl.Popup({
       closeButton: false,
