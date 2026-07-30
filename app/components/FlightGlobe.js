@@ -257,10 +257,10 @@ export default function GlobeMap({ flights, unit }) {
                   .filter(
                     (item) =>
                       value.length > 0 &&
-                      (item.name.toUpperCase().startsWith(value) ||
-                        item.name.toUpperCase().includes(value) ||
-                        item.iata.toUpperCase().startsWith(value) ||
-                        item.iata.toUpperCase().includes(value)),
+                      (String(item.name.toUpperCase()).startsWith(value) ||
+                        String(item.name.toUpperCase()).includes(value) ||
+                        String(item.iata.toUpperCase()).startsWith(value) ||
+                        String(item.iata.toUpperCase()).includes(value)),
                   )
 
                   .slice(0, 5),
