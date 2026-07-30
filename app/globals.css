@@ -45,7 +45,7 @@
   font-family: sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: black;
+  color: oklch(70.7% 0.165 254.624);
 }
 
 .pirep-lgt {

@@ -43,7 +43,7 @@ export default memo(function Map({
   const aSigMarkers = useRef([]);
   const sigCounter = useRef(0);
   const airspMarkers = useRef([]);
-  // const [activeWx, setActiveWx] = useState(null);
+  const [radar, setRadar] = useState("off");
   const [advType, setAdvType] = useState();
   const [expand, setExpand] = useState(false);
   const [done, setDone] = useState(false);
@@ -54,11 +54,14 @@ export default memo(function Map({
   const [showWind, setShowWind] = useState("off");
   const [lead, setLead] = useState(0);
   const [winds, setWinds] = useState({ data: null, alt: null });
+  const [refreshWeather, setRefreshWeather] = useState(false);
   const lastFlightId = useRef(null);
+  const lastWeatherRefresh = useRef(Date.now());
   const storedWinds = useRef([]);
   const currentFlightId = useRef(null);
   const windStart = useRef();
   const refreshTrackerInternal = useRef(0);
+  const isWeatherRefresh = useRef(false);
 
   async function RetrieveAirSig() {
     const aSigData = await AirSig();
@@ -206,19 +209,6 @@ export default memo(function Map({
     aSigMarkers.current.push(asMarker);
   }
 
-  // function WeatherLayers(type, map) {
-  //   let layer;
-  //   if (!type) return;
-  //   else if (type === "rad") {
-  //     layer = new RadarLayer({ id: type, opacity: 0.55 });
-  //   } else if (type === "temp") {
-  //     layer = new TemperatureLayer({ id: type, opacity: 0.55 });
-  //   } else if (type === "wind") {
-  //     layer = new WindLayer({ id: type, opacity: 0.55 });
-  //   }
-  //   layer ? map.addLayer(layer) : "";
-  // }
-
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -299,16 +289,54 @@ export default memo(function Map({
     }
   }, [dayNight, done]);
 
-  // useEffect(() => {
-  //   if (!done) return;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if ((Date.now() - lastWeatherRefresh.current) / 60000 >= 0.5) {
+        isWeatherRefresh.current = true;
+        setRefreshWeather(!refreshWeather);
+        lastWeatherRefresh.current = Date.now();
+      }
+    }, 1000);
 
-  //   ["rad", "temp", "wind"].forEach((value) => {
-  //     if (!map.current.getLayer(value)) return;
-  //     map.current.removeLayer(value);
-  //   });
+    return () => clearInterval(interval);
+  }, []);
 
-  //   WeatherLayers(activeWx, map.current);
-  // }, [activeWx]);
+  useEffect(() => {
+    if (!done) return;
+
+    if (map.current.getLayer("weather") && !isWeatherRefresh.current) {
+      const visibility = map.current.getLayoutProperty("weather", "visibility");
+
+      map.current.setLayoutProperty(
+        "weather",
+        "visibility",
+        visibility === "visible" || radar === "off" ? "none" : "visible",
+      );
+    } else {
+      if (radar === "on") {
+        if (map.current.getLayer("weather")) {
+          map.current.removeLayer("weather");
+          map.current.removeSource("weather");
+        }
+        map.current.addSource("weather", {
+          type: "raster",
+          tiles: [
+            `https://maps.visualcrossing.com/VisualCrossingWebServices/rest/api/v1/map/tile/precipcomposite/{z}/{x}/{y}.webp?apikey=${process.env.NEXT_PUBLIC_VISUAL_CROSSING_KEY}&time=latest`,
+          ],
+          tileSize: 256,
+        });
+
+        map.current.addLayer({
+          id: "weather",
+          type: "raster",
+          source: "weather",
+          paint: {
+            "raster-opacity": 0.7,
+          },
+        });
+      }
+    }
+  }, [radar, refreshWeather]);
 
   useEffect(() => {
     if (flight) {
@@ -1119,22 +1147,24 @@ export default memo(function Map({
         </div>
 
         <div className={`${expand ? "" : "hidden"} flex flex-col gap-2`}>
-          {/* <select
-            onChange={(e) => setActiveWx(e.target.value)}
-            className={`bg-blue-300 text-center text-slate-900 font-semibold rounded-lg hover:cursor-pointer px-2 text-sm`}
+          <div
+            onClick={() => {
+              radar === "on" ? setRadar("off") : setRadar("on");
+              isWeatherRefresh.current = false;
+            }}
+            className={`h-6 grid items-center justify-items-center ${
+              radar === "on" ? "bg-fuchsia-300" : "bg-slate-400"
+            } text-slate-900 font-semibold rounded-lg hover:cursor-pointer px-2 text-sm`}
           >
-            <option value={null}>Weather</option>
-            <option value={"rad"}>Radar</option>
-            <option value={"temp"}>SFC Temp</option>
-            <option value={"wind"}>SFC Wind</option>
-          </select> */}
+            Radar
+          </div>
           {winds.data && winds.data.length > 0 ? (
             <div
               onClick={() =>
                 showWind === "on" ? setShowWind("off") : setShowWind("on")
               }
               className={`h-6 grid items-center justify-items-center ${
-                showWind === "on" ? "bg-teal-300" : "bg-slate-400"
+                showWind === "on" ? "bg-blue-300" : "bg-slate-400"
               } text-slate-900 font-semibold rounded-lg hover:cursor-pointer px-2 text-sm`}
             >
               Winds Aloft
