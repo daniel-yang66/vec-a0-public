@@ -50,7 +50,7 @@ export default function GlobeMap({ flights, unit }) {
           type: "Feature",
           geometry: { type: "Point", coordinates: [f.lng, f.lat] },
           properties: {
-            ac_type: AircraftType(f.aircraft_icao),
+            ac_type: AircraftType(f.aircraft_icao || 'N/A'),
             flight_iata: f.flight_iata || f.flight_icao || "N/A",
             dep_iata: f.dep_iata || "---",
             arr_iata: f.arr_iata || "---",
