@@ -26,7 +26,7 @@ export default function GlobeMap({ flights, unit }) {
   const unitRef = useRef(unit);
   unitRef.current = unit;
 
-  const SPIN_RESUME_DELAY = 5000;
+  const SPIN_RESUME_DELAY = 7000;
   const SECONDS_PER_REVOLUTION = 240;
 
   function HandleFlight(text) {
@@ -109,6 +109,7 @@ export default function GlobeMap({ flights, unit }) {
         "space-color": "rgb(5, 8, 20)",
         "star-intensity": 0.4,
       });
+
       ["narrowbody", "widebody", "jumbo_jet", "regional_jet"].map((item, i) => {
         if (!map.hasImage(item)) {
           map.loadImage(`/${item}.png`, (error, image) => {
@@ -116,6 +117,7 @@ export default function GlobeMap({ flights, unit }) {
           });
         }
       });
+
       map.addSource("flights", {
         type: "geojson",
         data: flightsToGeoJSON(flightsRef.current),
@@ -131,11 +133,11 @@ export default function GlobeMap({ flights, unit }) {
             ["linear"],
             ["zoom"],
             1,
-            0.02,
+            0.03,
             6,
-            0.04,
+            0.05,
             10,
-            0.08,
+            0.09,
           ],
           "icon-rotate": ["get", "dir"], // heading in degrees
           "icon-rotation-alignment": "map", // rotate with the map, not screen

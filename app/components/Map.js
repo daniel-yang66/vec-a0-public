@@ -220,7 +220,7 @@ export default memo(function Map({
 
     map.current.on("style.load", () => {
       map.current.setFog({
-        color: "rgb(13, 20, 40)",
+        color: "rgb(25, 37, 71)",
         "high-color": "rgb(36, 60, 120)",
         "horizon-blend": 0.02,
         "space-color": "rgb(5, 8, 20)",
@@ -298,7 +298,7 @@ export default memo(function Map({
           ],
           tileSize: 256,
           attribution:
-            '&copy; <a href="https://www.visualcrossing.com/">&copy; Visual Crossing</a>',
+            '<a href="https://www.visualcrossing.com/">&copy; Visual Crossing</a>',
         });
 
         map.current.addLayer({
