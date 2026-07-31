@@ -1,9 +1,6 @@
 "use client";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-// import * as mapboxgl from "@maptiler/sdk";
-// import { RadarLayer, WindLayer, TemperatureLayer } from "@maptiler/weather";
-// import "@maptiler/sdk/dist/maptiler-sdk.css";
 import { useRef, useEffect, useState, memo } from "react";
 import { greatCircle, point, buffer, bbox, coordAll } from "@turf/turf";
 import { DateTime } from "luxon";
@@ -235,30 +232,6 @@ export default memo(function Map({
     });
   }, []);
 
-  // useEffect(() => {
-  //   if (map.current) return;
-  //   mapboxgl.config.apiKey = process.env.NEXT_PUBLIC_TILER_TOKEN;
-
-  //   map.current = new mapboxgl.Map({
-  //     container: mapContainer.current,
-  //     style: mapboxgl.MapStyle.TOPO_V4.DARK,
-  //     center: [-114, 33],
-  //     zoom: 2,
-  //     navigationControl: false,
-  //     geolocateControl: false,
-  //     scaleControl: false,
-  //     projectionControl: "bottom-right",
-  //   });
-
-  //   map.current.on("load", () => {
-  //     setDone(true);
-  //   });
-
-  //   return () => {
-  //     map.current.remove();
-  //   };
-  // }, []);
-
   useEffect(() => {
     if (!done) return;
     if (dayNight === "off") {
@@ -324,6 +297,8 @@ export default memo(function Map({
             `https://maps.visualcrossing.com/VisualCrossingWebServices/rest/api/v1/map/tile/precipcomposite/{z}/{x}/{y}.webp?apikey=${process.env.NEXT_PUBLIC_VISUAL_CROSSING_KEY}&time=latest`,
           ],
           tileSize: 256,
+          attribution:
+            '&copy; <a href="https://www.visualcrossing.com/">&copy; Visual Crossing</a>',
         });
 
         map.current.addLayer({
@@ -331,7 +306,7 @@ export default memo(function Map({
           type: "raster",
           source: "weather",
           paint: {
-            "raster-opacity": 0.7,
+            "raster-opacity": 0.6,
           },
         });
       }
@@ -922,7 +897,7 @@ export default memo(function Map({
     arrPin.className = "arr-pin";
 
     const planePin = document.createElement("div");
-    planePin.className = `${AircraftType(flight.aircraft_icao || 'N/A')}-pin`;
+    planePin.className = `${AircraftType(flight.aircraft_icao || "N/A")}-pin`;
 
     const popupDep = new mapboxgl.Popup({
       closeButton: false,

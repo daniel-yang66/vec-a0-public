@@ -171,8 +171,8 @@
 }
 .narrowbody-pin {
   background-image: url("/narrowbody.png");
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background-size: contain;
   background-repeat: no-repeat;
   display: block;
@@ -181,8 +181,8 @@
 }
 .widebody-pin {
   background-image: url("/widebody.png");
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background-size: contain;
   background-repeat: no-repeat;
   display: block;
@@ -191,8 +191,8 @@
 }
 .regional_jet-pin {
   background-image: url("/regional_jet.png");
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background-size: contain;
   background-repeat: no-repeat;
   display: block;
@@ -201,8 +201,8 @@
 }
 .jumbo_jet-pin {
   background-image: url("/jumbo_jet.png");
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background-size: contain;
   background-repeat: no-repeat;
   display: block;

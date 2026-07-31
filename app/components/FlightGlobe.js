@@ -50,7 +50,7 @@ export default function GlobeMap({ flights, unit }) {
           type: "Feature",
           geometry: { type: "Point", coordinates: [f.lng, f.lat] },
           properties: {
-            ac_type: AircraftType(f.aircraft_icao || 'N/A'),
+            ac_type: AircraftType(f.aircraft_icao || "N/A"),
             flight_iata: f.flight_iata || f.flight_icao || "N/A",
             dep_iata: f.dep_iata || "---",
             arr_iata: f.arr_iata || "---",
@@ -103,13 +103,12 @@ export default function GlobeMap({ flights, unit }) {
 
     map.on("style.load", () => {
       map.setFog({
-        color: "rgb(13, 20, 40)",
-        "high-color": "rgb(36, 60, 120)",
+        color: "rgb(18, 28, 56)",
+        "high-color": "rgb(45, 70, 135)",
         "horizon-blend": 0.02,
         "space-color": "rgb(5, 8, 20)",
         "star-intensity": 0.4,
       });
-
       ["narrowbody", "widebody", "jumbo_jet", "regional_jet"].map((item, i) => {
         if (!map.hasImage(item)) {
           map.loadImage(`/${item}.png`, (error, image) => {
@@ -117,7 +116,6 @@ export default function GlobeMap({ flights, unit }) {
           });
         }
       });
-
       map.addSource("flights", {
         type: "geojson",
         data: flightsToGeoJSON(flightsRef.current),

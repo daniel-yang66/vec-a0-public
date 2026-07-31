@@ -13,7 +13,8 @@ export function AircraftType(txt) {
     txt.startsWith("A318") ||
     txt.startsWith("B73") ||
     txt.startsWith("B75") ||
-    txt.startsWith("B3")
+    txt.startsWith("B3") ||
+    txt.startsWith("BC")
   ) {
     return "narrowbody";
   } else if (txt.startsWith("B74") || txt.startsWith("A38")) {
@@ -25,6 +26,6 @@ export function AircraftType(txt) {
   ) {
     return "widebody";
   } else {
-    return "regional_jet";
+    return "narrowbody";
   }
 }
