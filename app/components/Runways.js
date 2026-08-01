@@ -1,7 +1,5 @@
 "use client";
 
-// import * as mapboxgl from "@maptiler/sdk";
-// import "@maptiler/sdk/dist/maptiler-sdk.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useRef, useEffect, useState } from "react";
@@ -30,29 +28,6 @@ export default function Runways({ info, runways, unit }) {
       return calcRwy === "1" ? 1 : 0;
     }
   };
-
-  // useEffect(() => {
-  //   if (map.current) return;
-  //   mapboxgl.config.apiKey = process.env.NEXT_PUBLIC_TILER_TOKEN;
-
-  //   map.current = new mapboxgl.Map({
-  //     container: mapContainer.current,
-  //     style: mapboxgl.MapStyle.TOPO_V4.DARK,
-  //     center: [-114, 33],
-  //     zoom: 2,
-  //     navigationControl: false,
-  //     geolocateControl: false,
-  //     scaleControl: false,
-  //   });
-
-  //   map.current.on("load", () => {
-  //     setDone(true);
-  //   });
-
-  //   return () => {
-  //     map.current.remove();
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -115,22 +90,18 @@ export default function Runways({ info, runways, unit }) {
           anchor: "bottom",
         })
           .setLngLat([rwy.le_longitude_deg, rwy.le_latitude_deg])
-          .setHTML(
-            `<div  className="mapboxgl-popup-content mapbox-popup-tip">${rwy.le_ident}</div>`,
-          )
+          .setHTML(`<div>${rwy.le_ident}</div>`)
           .addTo(map.current);
 
         const popupHe = new mapboxgl.Popup({
           closeButton: false,
           closeOnClick: false,
-
+          className: "rwy-label",
           offset: [0, -18],
           anchor: "bottom",
         })
           .setLngLat([rwy.he_longitude_deg, rwy.he_latitude_deg])
-          .setHTML(
-            `<div  className="mapboxgl-popup-content mapbox-popup-tip">${rwy.he_ident}</div>`,
-          )
+          .setHTML(`<div>${rwy.he_ident}</div>`)
           .addTo(map.current);
         popups.current = [...popups.current, popupHe, popupLe];
 

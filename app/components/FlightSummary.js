@@ -126,7 +126,11 @@ export default function FlightSummary({ data, weather, tz, unit }) {
             strokeWidth="3"
             strokeLinecap="round"
             strokeDasharray={pathLength}
-            strokeDashoffset={pathLength - (pathLength * progress.pct) / 100}
+            strokeDashoffset={
+              progress.pct
+                ? pathLength - (pathLength * progress.pct) / 100
+                : pathLength
+            }
           />
           <circle cx={10} cy={60} r={7} fill={"oklch(70.7% 0.165 254.624)"} />
           <circle cx={290} cy={60} r={7} fill={"oklch(79.5% 0.184 86.047)"} />

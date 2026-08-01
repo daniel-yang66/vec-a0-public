@@ -10,7 +10,10 @@ function TimeType(time, estTime, schTime) {
     final = estTime ? estTime : schTime;
     finalText = estTime ? "est" : "sch";
   }
-  return { finalTime: final.replace(" ", "T") + ":00Z", finalText: finalText };
+  return {
+    finalTime: String(final).replace(" ", "T") + ":00Z",
+    finalText: finalText,
+  };
 }
 
 function DayStatus(time, lat, lon, tz) {
@@ -145,14 +148,14 @@ export function StatusOrProgress(
       outDt,
       flight.dep_time_utc
         ? flight.dep_time_utc.replace(" ", "T") + ":00Z"
-        : flight.dep_time.utc,
+        : flight.dep_time_utc,
     ).color;
 
     inColor = StatusColor(
       inDt,
       flight.arr_time_utc
         ? flight.arr_time_utc.replace(" ", "T") + ":00Z"
-        : flight.arr_time.utc,
+        : flight.arr_time_utc,
     ).color;
 
     outVar = !isNaN(outDt.hour)
@@ -160,7 +163,7 @@ export function StatusOrProgress(
           outDt,
           flight.dep_time_utc
             ? flight.dep_time_utc.replace(" ", "T") + ":00Z"
-            : flight.dep_time.utc,
+            : flight.dep_time_utc,
         ).var
       : { time: "--", sign: "" };
 
@@ -169,7 +172,7 @@ export function StatusOrProgress(
           inDt,
           flight.arr_time_utc
             ? flight.arr_time_utc.replace(" ", "T") + ":00Z"
-            : flight.arr_time.utc,
+            : flight.arr_time_utc,
         ).var
       : { time: "--", sign: "" };
 

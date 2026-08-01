@@ -6,15 +6,6 @@
   box-shadow: none !important;
 }
 
-/* .transparent-popup .maplibregl-popup-content {
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  pointer-events: none;
-}
-.transparent-popup .maplibregl-popup-tip {
-  display: none !important;
-} */
 .mapboxgl-popup-content {
   background-color: transparent !important;
   border: none;
@@ -28,16 +19,6 @@
 .mapboxgl-popup-tip {
   display: none;
 }
-
-/* .airport-label {
-  background-color: transparent !important;
-  border: none;
-  box-shadow: none;
-  font-family: sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  color: oklch(79.775% 0.09027 252.468);
-} */
 
 .adv-label {
   border: none;
@@ -79,7 +60,7 @@
   font-family: sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: oklch(83.7% 0.128 66.29);
+  color: oklch(83.7% 0.128 66.29) !important;
 }
 
 .dep-pin {
