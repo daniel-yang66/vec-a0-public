@@ -1,12 +1,13 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { renderToString } from "react-dom/server";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ConvertAlt, ConvertSpeed } from "../utils/UnitConversion";
 import { FiExternalLink } from "react-icons/fi";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { GetAirlineLogos } from "../utils/Database";
+import { GetAirlineLogos, GetAirportOptions } from "../utils/Database";
+import { useDebouncedCallback } from "use-debounce";
 import { AircraftType } from "../utils/General";
 
 export default function GlobeMap({ flights, unit }) {
@@ -16,6 +17,13 @@ export default function GlobeMap({ flights, unit }) {
   const [airline, setAirline] = useState();
   const [collapse, setCollapse] = useState(true);
   const [value, setValue] = useState("");
+  const [mode, setMode] = useState("airline");
+  const [airportItems, setAirportItems] = useState();
+  const [dep, setDep] = useState(null);
+  const [arr, setArr] = useState(null);
+  const [depValue, setDepValue] = useState("");
+  const [arrValue, setArrValue] = useState("");
+  const [field, setField] = useState(null);
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const spinningRef = useRef(true);
@@ -28,6 +36,39 @@ export default function GlobeMap({ flights, unit }) {
 
   const SPIN_RESUME_DELAY = 7000;
   const SECONDS_PER_REVOLUTION = 240;
+
+  async function GetAirports(val) {
+    setAirportItems([{ icao_code: "Searching...", name: "" }]);
+    try {
+      setAirportItems(await GetAirportOptions(val));
+    } catch {
+      setAirportItems(null);
+    }
+  }
+
+  function Row({ i, len, onPick, children }) {
+    return (
+      <div
+        onMouseDown={(e) => {
+          e.preventDefault();
+          onPick();
+        }}
+        className={`grid hover:cursor-pointer hover:bg-slate-800 hover:text-slate-300 place-items-center bg-slate-300 text-slate-900 w-full h-6 z-20 ${
+          len !== 1
+            ? i === len - 1
+              ? "rounded-b-lg"
+              : i === 0
+                ? "rounded-t-lg"
+                : ""
+            : "rounded-lg"
+        }`}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  const debounce = useDebouncedCallback(GetAirports, 700);
 
   function HandleFlight(text) {
     const params = new URLSearchParams(searchParams);
@@ -139,10 +180,10 @@ export default function GlobeMap({ flights, unit }) {
             10,
             0.09,
           ],
-          "icon-rotate": ["get", "dir"], // heading in degrees
-          "icon-rotation-alignment": "map", // rotate with the map, not screen
-          "icon-allow-overlap": true, // don't hide planes that collide
-          "icon-ignore-placement": true, // skip collision detection (faster)
+          "icon-rotate": ["get", "dir"],
+          "icon-rotation-alignment": "map",
+          "icon-allow-overlap": true,
+          "icon-ignore-placement": true,
         },
       });
       map.on("click", "flights-layer", (e) => {
@@ -216,69 +257,144 @@ export default function GlobeMap({ flights, unit }) {
 
   useEffect(() => {
     const src = mapRef.current?.getSource("flights");
-    if (src) {
-      let filteredFlights = flights;
-      if (airline) {
-        filteredFlights = flights.filter(
-          (flight) => flight.airline_iata == airline,
-        );
-      }
-      src.setData(flightsToGeoJSON(filteredFlights));
+    if (!src) return;
+    let filtered = flights || [];
+    if (mode === "airline" && airline) {
+      filtered = filtered.filter((f) => f.airline_iata === airline);
     }
-  }, [flights, unit, airline]);
+    if (mode === "route" && (dep || arr)) {
+      filtered = filtered.filter(
+        (f) =>
+          (!dep || f.dep_iata === dep || f.dep_icao === dep) &&
+          (!arr || f.arr_iata === arr || f.arr_icao === arr),
+      );
+    }
+    src.setData(flightsToGeoJSON(filtered));
+
+    if (mode === "route" && (dep || arr) && filtered.length) {
+      spinningRef.current = false;
+      const b = new mapboxgl.LngLatBounds();
+      filtered.forEach((f) => f.lng != null && b.extend([f.lng, f.lat]));
+      mapRef.current.fitBounds(b, {
+        padding: 80,
+        maxZoom: 4.5,
+        duration: 1200,
+      });
+    }
+  }, [flights, unit, airline, dep, arr, mode]);
 
   return (
     <>
-      <div className="absolute top-1 left-1 w-[50vw] md:w-[20vw] flex flex-col gap-2">
-        <input
-          onFocus={() => setCollapse(false)}
-          onBlur={() => setCollapse(true)}
-          onChange={async (e) => {
-            setCollapse(false);
-            setValue(String(e.target.value).toUpperCase());
-          }}
-          value={value}
-          className="rounded-lg w-full h-[4vh] md:h-[4vh] bg-slate-400 p-2 text-slate-900 z-20"
-          placeholder="Airline"
-          type="text"
-        />
+      <div className="absolute top-1 left-1 w-[60vw] md:w-[24vw] flex flex-col gap-2 z-20 font-semibold">
+        {mode === "airline" ? (
+          <input
+            onFocus={() => setCollapse(false)}
+            onBlur={() => setCollapse(true)}
+            onChange={(e) => {
+              setCollapse(false);
+              setValue(e.target.value.toUpperCase());
+            }}
+            value={value}
+            className="rounded-lg w-full h-[4vh] bg-slate-400 p-2 text-slate-900"
+            placeholder="Airline"
+            type="text"
+          />
+        ) : (
+          <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
+            <input
+              onFocus={() => {
+                setCollapse(false);
+                setField("dep");
+              }}
+              onBlur={() => setCollapse(true)}
+              onChange={(e) => {
+                setCollapse(false);
+                setField("dep");
+                setDepValue(e.target.value.toUpperCase());
+                debounce(e.target.value.trim().toUpperCase());
+              }}
+              value={depValue}
+              className="rounded-lg w-1/2 h-[4vh] bg-slate-400 p-2 text-slate-900"
+              placeholder="DEP"
+              type="text"
+            />
+            <input
+              onFocus={() => {
+                setCollapse(false);
+                setField("arr");
+              }}
+              onBlur={() => setCollapse(true)}
+              onChange={(e) => {
+                setCollapse(false);
+                setField("arr");
+                setArrValue(e.target.value.toUpperCase());
+                debounce(e.target.value.trim().toUpperCase());
+              }}
+              value={arrValue}
+              className="rounded-lg w-1/2 h-[4vh] bg-slate-400 p-2 text-slate-900"
+              placeholder="ARR"
+              type="text"
+            />
+          </form>
+        )}
+        {!collapse && (
+          <div className="bg-slate-700 rounded-lg grid items-center justify-items-center w-full p-2">
+            <h3 className="text-slate-300 text-md mb-2">Search by</h3>
+            <div className="flex gap-[2px] w-full">
+              <div
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  setMode("airline");
+                  setCollapse(true);
+                  setValue("");
+                  setDepValue("");
+                  setArrValue("");
+                  setDep(null);
+                  setArr(null);
+                }}
+                className="relative items-center w-full text-md font-semibold bg-slate-400 hover:cursor-pointer text-center hover:bg-blue-800 hover:text-slate-300 rounded-lg mb-2"
+              >
+                {"Carrier"}
+              </div>
+              <div
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  setMode("route");
+                  setCollapse(true);
+                  setValue("");
+                  setDepValue("");
+                  setArrValue("");
+                  setDep(null);
+                  setArr(null);
+                }}
+                className="relative items-center w-full text-md font-semibold bg-slate-400 hover:cursor-pointer text-center hover:bg-blue-800 hover:text-slate-300 rounded-lg mb-2"
+              >
+                {"Route"}
+              </div>
+            </div>
+          </div>
+        )}
 
-        <div
-          className={
-            collapse
-              ? "hidden"
-              : "grid w-full h-4/5 mt-2 rounded-lg justify-items-center"
-          }
-        >
-          {airlines && !collapse
-            ? [
-                { iata: null, name: "All" },
-                ...airlines
-                  .filter(
-                    (item) =>
-                      value.length > 0 &&
-                      (String(item.name.toUpperCase()).startsWith(value) ||
-                        String(item.name.toUpperCase()).includes(value) ||
-                        String(item.iata.toUpperCase()).startsWith(value) ||
-                        String(item.iata.toUpperCase()).includes(value)),
-                  )
-
-                  .slice(0, 5),
-              ].map((item, i, arr) => {
-                return (
-                  <div
+        {!collapse && (
+          <div className="grid w-full rounded-lg justify-items-center">
+            {mode === "airline"
+              ? airlines &&
+                [
+                  { iata: null, name: "All" },
+                  ...airlines
+                    .filter(
+                      (item) =>
+                        value.length > 0 &&
+                        (item.name.toUpperCase().includes(value) ||
+                          item.iata.toUpperCase().includes(value)),
+                    )
+                    .slice(0, 5),
+                ].map((item, i, arr) => (
+                  <Row
                     key={i}
-                    className={`grid hover:cursor-pointer hover:bg-slate-800 hover:text-slate-300 justify-items-center items-center bg-slate-300 w-full h-6 z-20 ${
-                      arr.length !== 1
-                        ? i == arr.length - 1
-                          ? "rounded-br-lg rounded-bl-lg"
-                          : i == 0
-                            ? "rounded-tr-lg rounded-tl-lg"
-                            : ""
-                        : "rounded-lg"
-                    }`}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
+                    i={i}
+                    len={arr.length}
+                    onPick={() => {
                       setValue(
                         item.name !== "All" ? item.name.toUpperCase() : "",
                       );
@@ -286,14 +402,36 @@ export default function GlobeMap({ flights, unit }) {
                       setCollapse(true);
                     }}
                   >
-                    {`${item.name}`}
-                  </div>
-                );
-              })
-            : ""}
-        </div>
+                    {item.name}
+                  </Row>
+                ))
+              : (() => {
+                  if (!airportItems) return null;
+                  return airportItems.map((item, i) => (
+                    <Row
+                      key={item.icao_code}
+                      i={i}
+                      len={airportItems.length}
+                      onPick={() => {
+                        if (field === "dep") {
+                          setDepValue(item.icao_code);
+                          setDep(item.icao_code);
+                        } else {
+                          setArrValue(item.icao_code);
+                          setArr(item.icao_code);
+                        }
+                        setCollapse(true);
+                      }}
+                    >
+                      {item.icao_code !== "Searching..."
+                        ? `${item.name}${` (${item.icao_code})`}`
+                        : item.icao_code}
+                    </Row>
+                  ));
+                })()}
+          </div>
+        )}
       </div>
-
       <div ref={containerRef} className="w-full h-full rounded-lg" />
     </>
   );

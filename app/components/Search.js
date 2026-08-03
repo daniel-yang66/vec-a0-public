@@ -128,7 +128,7 @@ export default function Search() {
                   >
                     {`${item.name}${
                       item.icao_code === "Searching..."
-                        ? " Searching..."
+                        ? item.icao_code
                         : ` (${item.icao_code})`
                     }`}
                   </div>
@@ -249,7 +249,7 @@ export default function Search() {
                   >
                     {`${item.name}${
                       item.icao_code === "Searching..."
-                        ? " Searching..."
+                        ? item.icao_code
                         : ` (${item.icao_code})`
                     }`}
                   </div>

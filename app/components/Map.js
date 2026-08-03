@@ -41,6 +41,7 @@ export default memo(function Map({
   const sigCounter = useRef(0);
   const airspMarkers = useRef([]);
   const [radar, setRadar] = useState("off");
+  const [clouds, setClouds] = useState("off");
   const [advType, setAdvType] = useState();
   const [expand, setExpand] = useState(false);
   const [done, setDone] = useState(false);
@@ -277,21 +278,21 @@ export default memo(function Map({
   useEffect(() => {
     if (!done) return;
 
-    if (map.current.getLayer("weather") && !isWeatherRefresh.current) {
-      const visibility = map.current.getLayoutProperty("weather", "visibility");
+    if (map.current.getLayer("radar") && !isWeatherRefresh.current) {
+      const visibility = map.current.getLayoutProperty("radar", "visibility");
 
       map.current.setLayoutProperty(
-        "weather",
+        "radar",
         "visibility",
         visibility === "visible" || radar === "off" ? "none" : "visible",
       );
     } else {
       if (radar === "on") {
-        if (map.current.getLayer("weather")) {
-          map.current.removeLayer("weather");
-          map.current.removeSource("weather");
+        if (map.current.getLayer("radar")) {
+          map.current.removeLayer("radar");
+          map.current.removeSource("radar");
         }
-        map.current.addSource("weather", {
+        map.current.addSource("radar", {
           type: "raster",
           tiles: [
             `https://maps.visualcrossing.com/VisualCrossingWebServices/rest/api/v1/map/tile/precipcomposite/{z}/{x}/{y}.webp?apikey=${process.env.NEXT_PUBLIC_VISUAL_CROSSING_KEY}&time=latest`,
@@ -302,9 +303,9 @@ export default memo(function Map({
         });
 
         map.current.addLayer({
-          id: "weather",
+          id: "radar",
           type: "raster",
-          source: "weather",
+          source: "radar",
           paint: {
             "raster-opacity": 0.6,
           },
@@ -312,6 +313,45 @@ export default memo(function Map({
       }
     }
   }, [radar, refreshWeather]);
+
+  useEffect(() => {
+    if (!done) return;
+
+    if (map.current.getLayer("clouds") && !isWeatherRefresh.current) {
+      const visibility = map.current.getLayoutProperty("clouds", "visibility");
+
+      map.current.setLayoutProperty(
+        "clouds",
+        "visibility",
+        visibility === "visible" || clouds === "off" ? "none" : "visible",
+      );
+    } else {
+      if (clouds === "on") {
+        if (map.current.getLayer("clouds")) {
+          map.current.removeLayer("clouds");
+          map.current.removeSource("clouds");
+        }
+        map.current.addSource("clouds", {
+          type: "raster",
+          tiles: [
+            `https://maps.visualcrossing.com/VisualCrossingWebServices/rest/api/v1/map/tile/cloudcover/{z}/{x}/{y}.webp?apikey=${process.env.NEXT_PUBLIC_VISUAL_CROSSING_KEY}&time=latest&source=gfs`,
+          ],
+          tileSize: 256,
+          attribution:
+            '<a href="https://www.visualcrossing.com/">&copy; Visual Crossing</a>',
+        });
+
+        map.current.addLayer({
+          id: "clouds",
+          type: "raster",
+          source: "clouds",
+          paint: {
+            "raster-opacity": 0.4,
+          },
+        });
+      }
+    }
+  }, [clouds, refreshWeather]);
 
   useEffect(() => {
     if (flight) {
@@ -1132,6 +1172,17 @@ export default memo(function Map({
             } text-slate-900 font-semibold rounded-lg hover:cursor-pointer px-2 text-sm`}
           >
             Radar
+          </div>
+          <div
+            onClick={() => {
+              clouds === "on" ? setClouds("off") : setClouds("on");
+              isWeatherRefresh.current = false;
+            }}
+            className={`h-6 grid items-center justify-items-center ${
+              clouds === "on" ? "bg-fuchsia-300" : "bg-slate-400"
+            } text-slate-900 font-semibold rounded-lg hover:cursor-pointer px-2 text-sm`}
+          >
+            Clouds
           </div>
           {winds.data && winds.data.length > 0 ? (
             <div
