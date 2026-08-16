@@ -134,7 +134,6 @@ export default function FlightDetails({
     if (refreshTrackerInternal.current !== refreshTracker.current) {
       refresh = true;
     }
-    setSpecs(undefined);
 
     if (refresh) {
       GetAtisCharts(flight.dep_icao, flight.arr_icao, refresh);
@@ -212,12 +211,7 @@ export default function FlightDetails({
               >
                 Airport
               </div>
-              <div
-                className={`flex-none w-20 md:w-full h-8 rounded-lg bg-blue-500 text-slate-900 grid items-center justify-items-center font-semibold ${viewType === "aircraft" ? "border-solid border-2 border-slate-300" : ""}`}
-                onClick={() => setViewType("aircraft")}
-              >
-                Aircraft
-              </div>
+
               <div
                 className={`flex-none w-20 md:w-full h-8 rounded-lg bg-blue-500 text-slate-900 grid items-center justify-items-center font-semibold ${viewType === "atis" ? "border-solid border-2 border-slate-300" : ""}`}
                 onClick={() => setViewType("atis")}
