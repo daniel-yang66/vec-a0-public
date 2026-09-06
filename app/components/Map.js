@@ -905,9 +905,13 @@ export default memo(function Map({
     });
     markers.current = [];
 
-    if (map.current.getSource("route")) {
-      map.current.removeLayer("route");
-      map.current.removeSource("route");
+    if (map.current.getSource("route1")) {
+      map.current.removeLayer("route1");
+      map.current.removeSource("route1");
+    }
+    if (map.current.getSource("route2")) {
+      map.current.removeLayer("route2");
+      map.current.removeSource("route2");
     }
 
     if (!flight || !airports) return;
@@ -1002,30 +1006,53 @@ export default memo(function Map({
       .togglePopup();
 
     if (done) {
-      const originPoint = point([
+      const planePoint = point([
         planeCoords ? planeCoords.lon : depCoords.lon,
         planeCoords ? planeCoords.lat : depCoords.lat,
       ]);
-      const destPoint = point([arrCoords.lon, arrCoords.lat]);
-      const line = greatCircle(originPoint, destPoint, {
+      const point1 = point([depCoords.lon, depCoords.lat]);
+      const line1 = greatCircle(point1, planePoint, {
         npoints: 200,
       });
 
-      map.current.addSource("route", {
+      const point2 = point([arrCoords.lon, arrCoords.lat]);
+      const line2 = greatCircle(planePoint, point2, {
+        npoints: 200,
+      });
+
+      map.current.addSource("route1", {
         type: "geojson",
-        data: line,
+        data: line1,
       });
       map.current.addLayer({
-        id: "route",
+        id: "route1",
         type: "line",
-        source: "route",
+        source: "route1",
         layout: {
           "line-join": "round",
           "line-cap": "round",
         },
         paint: {
           "line-color": "green",
-          "line-width": 2,
+          "line-width": 3,
+        },
+      });
+
+      map.current.addSource("route2", {
+        type: "geojson",
+        data: line2,
+      });
+      map.current.addLayer({
+        id: "route2",
+        type: "line",
+        source: "route2",
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "rgb(191, 191, 246)",
+          "line-width": 3,
           "line-dasharray": [3, 2],
         },
       });

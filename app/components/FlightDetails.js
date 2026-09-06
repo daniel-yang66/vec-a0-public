@@ -22,6 +22,7 @@ export default function FlightDetails({
   stationData,
   dark,
   refreshTracker,
+  onSetAgentContext,
 }) {
   const [charts, setCharts] = useState();
   const [activeChart, setActiveChart] = useState();
@@ -49,22 +50,36 @@ export default function FlightDetails({
     }
   }
 
-  async function GetAtisCharts(dep, arr, refresh) {
+  async function GetDepArrInfo(dep, arr, refresh) {
     // console.log("helloatis");
 
     if (!refresh) {
       startLoading();
     }
+    let dataStore = {
+      flight: flight,
+      weather: {
+        dep: {
+          latest: stationData.weather.origin.latest.raw,
+          fcast: stationData.weather.origin.fcast,
+        },
+        arr: {
+          latest: stationData.weather.destination.latest.raw,
+          fcast: stationData.weather.destination.forecast.raw,
+        },
+      },
+    };
 
     try {
       try {
         const chartDataDep = await Charts(dep);
         const chartDataArr = await Charts(arr);
-
-        setCharts({
+        const chartInfo = {
           dep: chartDataDep && chartDataDep.charts ? chartDataDep.charts : null,
           arr: chartDataArr && chartDataArr.charts ? chartDataArr.charts : null,
-        });
+        };
+        setCharts(chartInfo);
+        // dataStore.charts = chartInfo;
       } catch {
         Notify("Failed to get aerodrome charts", "err");
       }
@@ -72,8 +87,7 @@ export default function FlightDetails({
       try {
         const atisDep = await Atis(dep);
         const atisArr = await Atis(arr);
-
-        setAtis({
+        const atisInfo = {
           dep:
             atisDep && atisDep[0] && atisDep[0].datis
               ? atisDep[0].datis.split(".")
@@ -82,53 +96,46 @@ export default function FlightDetails({
             atisArr && atisArr[0] && atisArr[0].datis
               ? atisArr[0].datis.split(".")
               : null,
-        });
+        };
+
+        setAtis(atisInfo);
+        dataStore.atis = atisInfo;
       } catch {
         Notify("Failed to get ATIS", "err");
       }
+
+      try {
+        const notamDep = await Notam(dep);
+        const notamArr = await Notam(arr);
+        const notamInfo = {
+          dep: notamDep && notamDep.notams ? notamDep.notams : null,
+          arr: notamArr && notamArr.notams ? notamArr.notams : null,
+        };
+
+        setNotams(notamInfo);
+        // dataStore.notam = notamInfo;
+      } catch {
+        Notify("Failed to get NOTAMS", "err");
+      }
+      try {
+        const data = await GetRunways(dep, arr);
+        const rwyInfo = { dep: data.origin, arr: data.destination };
+        setRunways(rwyInfo);
+        dataStore.rwy = rwyInfo;
+      } catch {
+        Notify("Failed to get runway data", "err");
+      }
+
+      onSetAgentContext(dataStore);
     } catch {
-      Notify("Failed to get ATIS and Charts", "err");
-    } finally {
-      stopLoading();
-    }
-  }
-  async function GetNotam(dep, arr, refresh) {
-    // console.log("hellonotam");
-
-    if (!refresh) {
-      startLoading();
-    }
-
-    try {
-      const notamDep = await Notam(dep);
-      const notamArr = await Notam(arr);
-
-      setNotams({
-        dep: notamDep && notamDep.notams ? notamDep.notams : null,
-        arr: notamArr && notamArr.notams ? notamArr.notams : null,
-      });
-    } catch {
-      Notify("Failed to get NOTAMS", "err");
-    } finally {
-      stopLoading();
-    }
-  }
-
-  async function RetrieveRunwayData(dep, arr) {
-    startLoading();
-
-    try {
-      const data = await GetRunways(dep, arr);
-      setRunways({ dep: data.origin, arr: data.destination });
-    } catch {
-      Notify("Failed to get runway data", "err");
+      Notify("Failed to get Departure and Arrival Airport Info", "err");
     } finally {
       stopLoading();
     }
   }
 
   useEffect(() => {
-    if (details === "off") return;
+    if (!flight) return;
 
     let refresh = false;
     if (refreshTrackerInternal.current !== refreshTracker.current) {
@@ -136,22 +143,20 @@ export default function FlightDetails({
     }
 
     if (refresh) {
-      GetAtisCharts(flight.dep_icao, flight.arr_icao, refresh);
-      GetNotam(flight.dep_icao, flight.arr_icao, refresh);
+      GetDepArrInfo(
+        flight.dep_icao ? flight.dep_icao : flight.dep_iata,
+        flight.arr_icao ? flight.arr_icao : flight.arr_iata,
+        refresh,
+      );
       refreshTrackerInternal.current = refreshTracker.current;
     } else {
       if (!charts || !atis) {
-        GetAtisCharts(flight.dep_icao, flight.arr_icao, refresh);
+        GetDepArrInfo(
+          flight.dep_icao ? flight.dep_icao : flight.dep_iata,
+          flight.arr_icao ? flight.arr_icao : flight.arr_iata,
+          refresh,
+        );
       }
-
-      if (viewType === "notams" && !notams) {
-        GetNotam(flight.dep_icao, flight.arr_icao);
-      }
-
-      if (!runways.dep && viewType === "rwy") {
-        RetrieveRunwayData(flight.dep_icao, flight.arr_icao);
-      }
-      if (viewType === "aircraft" && !specs) GetSpecs(flight.aircraft_icao);
     }
   }, [flight, details, viewType, unit]);
 

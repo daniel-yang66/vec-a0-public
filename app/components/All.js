@@ -20,6 +20,7 @@ import WorldFlights from "../api/WorldFlights";
 import GlobeMap from "./FlightGlobe";
 import RealTime from "../api/Flights";
 import tz_lookup from "tz-lookup";
+import VecAgent from "./VecAgent";
 
 export default function All({ flightNo, route }) {
   const [flight, setFlight] = useState();
@@ -39,6 +40,7 @@ export default function All({ flightNo, route }) {
   });
   const [settingsClose, setSettingsClose] = useState(true);
   const [trigger, setTrigger] = useState(0);
+  const [agentContext, setAgentContext] = useState();
   const param = useRef({ flt: null, rt: null });
   const autoRefresh = useRef(false);
   const lastStationRefresh = useRef(Date.now());
@@ -374,6 +376,9 @@ export default function All({ flightNo, route }) {
                 wx={stationData ? stationData.weather : null}
               />
             </div>
+
+            {agentContext ? <VecAgent context={agentContext} /> : <></>}
+
             <FlightDetails
               unit={settings.unit}
               flight={flight}
@@ -384,6 +389,7 @@ export default function All({ flightNo, route }) {
               stationData={stationData}
               dark={settings.dark}
               refreshTracker={refreshTracker}
+              onSetAgentContext={setAgentContext}
             />
             {!settingsClose ? (
               <Settings
