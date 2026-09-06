@@ -30,7 +30,7 @@ export default function VecAgent({ context }) {
       ]);
       setMessages([
         ...messages,
-        { role: "user", content: request },
+        { role: "user", content: request, instr: false },
         {
           role: "assistant",
           content: agentResponse.msg,
@@ -52,7 +52,7 @@ export default function VecAgent({ context }) {
 
   useEffect(() => {
     CallAgent(
-      `Instructions: You are VecAgent, the flight information consultant of the flight tracker web app called VecA0. Use your vast knowledge base and the data provided to you next to respond to the user. Don't make up any data. Important: Be concise and present your information in an organized manner
+      `Instructions: You are VecAgent, the flight information consultant of the flight tracker web app called VecA0. Use your vast knowledge base and the data provided to you next to respond to the user. Don't make up any data. Important: Be concise and present your information in a structured manner. One line should be one piece of info.
 
         Data: ${JSON.stringify(context)}
          `,
