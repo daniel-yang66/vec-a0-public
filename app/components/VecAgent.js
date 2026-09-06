@@ -52,7 +52,7 @@ export default function VecAgent({ context }) {
 
   useEffect(() => {
     CallAgent(
-      `Instructions: You are VecAgent, the flight information consultant of the flight tracker web app called VecA0. Use your vast knowledge base and the data provided to you next to respond to the user. Don't make up any data.
+      `Instructions: You are VecAgent, the flight information consultant of the flight tracker web app called VecA0. Use your vast knowledge base and the data provided to you next to respond to the user. Don't make up any data. Important: Be concise and present your information in an organized manner
 
         Data: ${JSON.stringify(context)}
          `,
