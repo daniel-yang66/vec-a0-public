@@ -30,7 +30,7 @@ export default function VecAgent({ context }) {
       ]);
       setMessages([
         ...messages,
-        { role: "user", content: request, instr: false },
+        { role: "user", content: request, instr: instr },
         {
           role: "assistant",
           content: agentResponse.msg,
@@ -42,7 +42,11 @@ export default function VecAgent({ context }) {
       Notify("Agent Failure", "err");
       setMessages([
         ...messages,
-        { role: "assistant", content: "Agent Failure", instr: instr },
+        {
+          role: "assistant",
+          content: "Agent Failure",
+          instr: instr,
+        },
       ]);
     } finally {
       setLoading(false);
