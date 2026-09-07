@@ -74,7 +74,7 @@ export default function VecAgent({ context }) {
 
         Ensure any numbers reported are in aviation units unless imperial or metric is requested (Flight units above are not in aviation units)
 
-        The departure and arrival times are the out and in times respectively, not off and on times.
+        The departure and arrival times are the pushback and gate-in times respectively, not takeoff and landing times.
 
         Data: ${JSON.stringify(context)}
          `,
@@ -118,7 +118,7 @@ export default function VecAgent({ context }) {
                   className="flex gap-2 items-center"
                   key={`${i}-${msg.content}`}
                 >
-                  <div className="w-8 h-8 grid items-center justify-items-center rounded-full bg-blue-950">
+                  <div className="w-8 h-8 shrink-0 grid items-center justify-items-center rounded-full bg-blue-950">
                     <FaRobot
                       className={`${"text-blue-400 text-[14px] md:text-[16px]"}`}
                     />
@@ -139,7 +139,7 @@ export default function VecAgent({ context }) {
                   <div className="grid items-center max-w-[80%] h-full p-2 rounded-lg bg-blue-400 text-sm text-slate-800 font-semibold">
                     {msg.content}
                   </div>
-                  <div className="w-8 h-8 grid items-center justify-items-center rounded-full bg-blue-950">
+                  <div className="w-8 h-8 shrink-0 grid items-center justify-items-center rounded-full bg-blue-950">
                     <IoPerson
                       className={`${"text-blue-400 text-[14px] md:text-[16px]"}`}
                     />
