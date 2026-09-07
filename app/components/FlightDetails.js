@@ -60,12 +60,12 @@ export default function FlightDetails({
       flight: flight,
       weather: {
         dep: {
-          latest: stationData.weather.origin.latest.raw,
-          fcast: stationData.weather.origin.fcast,
+          latest: stationData.weather.origin.latest,
+          forecast: stationData.weather.origin.forecast,
         },
         arr: {
-          latest: stationData.weather.destination.latest.raw,
-          fcast: stationData.weather.destination.forecast.raw,
+          latest: stationData.weather.destination.latest,
+          forecast: stationData.weather.destination.forecast,
         },
       },
     };
