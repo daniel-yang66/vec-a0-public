@@ -178,7 +178,7 @@ export default function Runways({ info, runways, unit }) {
       ) {
         slope = (
           ((metrics.he_elevation_ft - metrics.le_elevation_ft) /
-            metrics.length_ft) *
+            data.length_ft) *
           100
         ).toFixed(2);
         lda =
@@ -196,7 +196,7 @@ export default function Runways({ info, runways, unit }) {
       ) {
         slope = (
           ((metrics.le_elevation_ft - metrics.he_elevation_ft) /
-            metrics.length_ft) *
+            data.length_ft) *
           100
         ).toFixed(2);
         lda =

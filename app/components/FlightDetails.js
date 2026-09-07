@@ -59,12 +59,12 @@ export default function FlightDetails({
     let dataStore = {
       flight: flight,
       weather: {
-        dep: {
-          latest: stationData.weather.origin.latest,
+        origin: {
+          current: stationData.weather.origin.latest,
           forecast: stationData.weather.origin.forecast,
         },
-        arr: {
-          latest: stationData.weather.destination.latest,
+        destination: {
+          current: stationData.weather.destination.latest,
           forecast: stationData.weather.destination.forecast,
         },
       },
@@ -75,8 +75,10 @@ export default function FlightDetails({
         const chartDataDep = await Charts(dep);
         const chartDataArr = await Charts(arr);
         const chartInfo = {
-          dep: chartDataDep && chartDataDep.charts ? chartDataDep.charts : null,
-          arr: chartDataArr && chartDataArr.charts ? chartDataArr.charts : null,
+          origin:
+            chartDataDep && chartDataDep.charts ? chartDataDep.charts : null,
+          destination:
+            chartDataArr && chartDataArr.charts ? chartDataArr.charts : null,
         };
         setCharts(chartInfo);
         // dataStore.charts = chartInfo;
@@ -88,11 +90,11 @@ export default function FlightDetails({
         const atisDep = await Atis(dep);
         const atisArr = await Atis(arr);
         const atisInfo = {
-          dep:
+          origin:
             atisDep && atisDep[0] && atisDep[0].datis
               ? atisDep[0].datis.split(".")
               : null,
-          arr:
+          destination:
             atisArr && atisArr[0] && atisArr[0].datis
               ? atisArr[0].datis.split(".")
               : null,
@@ -108,8 +110,8 @@ export default function FlightDetails({
         const notamDep = await Notam(dep);
         const notamArr = await Notam(arr);
         const notamInfo = {
-          dep: notamDep && notamDep.notams ? notamDep.notams : null,
-          arr: notamArr && notamArr.notams ? notamArr.notams : null,
+          origin: notamDep && notamDep.notams ? notamDep.notams : null,
+          destination: notamArr && notamArr.notams ? notamArr.notams : null,
         };
 
         setNotams(notamInfo);
@@ -119,9 +121,9 @@ export default function FlightDetails({
       }
       try {
         const data = await GetRunways(dep, arr);
-        const rwyInfo = { dep: data.origin, arr: data.destination };
+        const rwyInfo = { origin: data.origin, destination: data.destination };
         setRunways(rwyInfo);
-        dataStore.rwy = rwyInfo;
+        // dataStore.rwy = rwyInfo;
       } catch {
         Notify("Failed to get runway data", "err");
       }
@@ -272,11 +274,15 @@ export default function FlightDetails({
               />
             )}
             {viewType === "atis" && atis && (
-              <AtisInfo atis={airport === "dep" ? atis.dep : atis.arr} />
+              <AtisInfo
+                atis={airport === "dep" ? atis.origin : atis.destination}
+              />
             )}
 
             {viewType === "notams" && notams && (
-              <Notams notams={airport === "dep" ? notams.dep : notams.arr} />
+              <Notams
+                notams={airport === "dep" ? notams.origin : notams.destination}
+              />
             )}
 
             {viewType === "charts" && (
@@ -292,9 +298,9 @@ export default function FlightDetails({
                     Select Chart
                   </option>
                   {charts &&
-                    (airport === "dep" ? charts.dep : charts.arr) &&
+                    (airport === "dep" ? charts.origin : charts.destination) &&
                     Object.entries(
-                      airport === "dep" ? charts.dep : charts.arr,
+                      airport === "dep" ? charts.origin : charts.destination,
                     ).map(([k, v], i) => {
                       return (
                         <optgroup
@@ -341,7 +347,9 @@ export default function FlightDetails({
                         tz: stationData.tz.destination,
                       }
                 }
-                runways={airport === "dep" ? runways.dep : runways.arr}
+                runways={
+                  airport === "dep" ? runways.origin : runways.destination
+                }
                 unit={unit}
               />
             )}
