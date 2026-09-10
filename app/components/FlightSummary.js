@@ -1,5 +1,4 @@
 "use client";
-import { PiAirplaneInFlightFill } from "react-icons/pi";
 import { useEffect, useRef, useState } from "react";
 import { ConvertWeather } from "../utils/ConvertWeather";
 import { StatusOrProgress } from "../utils/FlightFunctions";
@@ -70,15 +69,16 @@ export default function FlightSummary({ data, weather, tz, unit }) {
       total: progData.total,
       rem: progData.remaining,
       pct: progData.pct,
+      status: progData.status,
     });
   }, [data, weather, tz]);
 
   if (data && (weather ? weather.origin || weather.destination : false)) {
     return (
       <section
-        className={`relative grid justify-items-center h-[23vh] min-[768px]:h-[20vh] min-[1000px]:h-[28vh] lmd:h-[25vh]! min-[768px]:w-[51vw] min-[1000px]:w-[38vw] lmd:w-full! bg-linear-to-br from-slate-950 to-blue-900 rounded-lg p-2 border-2 border-solid border-blue-900 text-slate-300`}
+        className={`relative grid justify-items-center items-end h-[23vh] min-[768px]:h-[20vh] min-[1000px]:h-[28vh] lmd:h-[25vh]! min-[768px]:w-[51vw] min-[1000px]:w-[38vw] lmd:w-full! bg-linear-to-br from-slate-950 to-blue-900 rounded-lg p-2 border-2 border-solid border-blue-900 text-slate-300`}
       >
-        <p className={`absolute top-1 left-1 text-blue-400 text-sm md:text-lg`}>
+        <p className={`absolute top-1 left-1 text-blue-400 text-xl`}>
           {airline.name}
         </p>
         {airline.logo ? (
@@ -90,67 +90,69 @@ export default function FlightSummary({ data, weather, tz, unit }) {
         ) : (
           <></>
         )}
-        <PiAirplaneInFlightFill
-          className={`text-blue-400 text-[30px] md:text-[35px]`}
-        />
-
-        <div className="w-[335px] flex justify-between -mb-4 md:-mb-[21px]">
-          <div className="inline-flex items-top">
-            {symbols ? symbols.origin : <></>}
-            <p className="text-[14px] font-semibold">{`${ConvertTemp(unit, weather.origin.latest.temperature.value)}\xB0${unit === "met" || unit === "av" ? weather.origin.latest.units.temperature : "F"}`}</p>
+        <div className="mb-8 md:mb-6">
+          <div className="w-[335px] flex justify-between -mb-14">
+            <div className="inline-flex items-top -ml-[6px] md:-ml-[11px]">
+              {symbols ? symbols.origin : <></>}
+              <p className="text-[18px] font-semibold">{`${ConvertTemp(unit, weather.origin.latest.temperature.value)}\xB0${unit === "met" || unit === "av" ? weather.origin.latest.units.temperature : "F"}`}</p>
+            </div>
+            <div className="inline-flex items-top -mr-[13px]">
+              {symbols ? symbols.destination : <></>}
+              <p className="text-[18px] font-semibold">{`${ConvertTemp(unit, weather.destination.latest.temperature.value)}\xB0${unit === "met" || unit === "av" ? weather.destination.latest.units.temperature : "F"}`}</p>
+            </div>{" "}
           </div>
-          <div className="inline-flex items-top -mr-[6px] md:-mr-[11px]">
-            {symbols ? symbols.destination : <></>}
-            <p className="text-[14px] font-semibold">{`${ConvertTemp(unit, weather.destination.latest.temperature.value)}\xB0${unit === "met" || unit === "av" ? weather.destination.latest.units.temperature : "F"}`}</p>
-          </div>{" "}
-        </div>
 
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-[320px] h-[70px] -mt-[15%] min-[768px]:-mt-[11%] min-[1000px]:-mt-[9%]"
-          preserveAspectRatio="none"
-        >
-          <path
-            ref={pathRef}
-            d={"M10 60 Q150 3 290 60"}
-            fill="none"
-            stroke={"oklch(92.9% 0.013 255.508)"}
-            strokeWidth="3"
-            strokeDasharray="16 5"
-            strokeLinecap="round"
-          />
-          <path
-            d={"M10 60 Q150 3 290 60"}
-            fill="none"
-            stroke={"oklch(84.5% 0.143 164.978)"}
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeDasharray={pathLength}
-            strokeDashoffset={
-              progress.pct
-                ? pathLength - (pathLength * progress.pct) / 100
-                : pathLength
-            }
-          />
-          <circle cx={10} cy={60} r={7} fill={"oklch(70.7% 0.165 254.624)"} />
-          <circle cx={290} cy={60} r={7} fill={"oklch(79.5% 0.184 86.047)"} />
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-[320px] h-[70px] -mt-[15%] min-[768px]:-mt-[11%] min-[1000px]:-mt-[9%]"
+            preserveAspectRatio="none"
+          >
+            <path
+              ref={pathRef}
+              d={"M10 60 Q150 3 290 60"}
+              fill="none"
+              stroke={"oklch(92.9% 0.013 255.508)"}
+              strokeWidth="3"
+              strokeDasharray="16 5"
+              strokeLinecap="round"
+            />
+            <path
+              d={"M10 60 Q150 3 290 60"}
+              fill="none"
+              stroke={"oklch(84.5% 0.143 164.978)"}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray={pathLength}
+              strokeDashoffset={
+                progress.pct
+                  ? pathLength - (pathLength * progress.pct) / 100
+                  : pathLength
+              }
+            />
+            <circle cx={10} cy={60} r={7} fill={"oklch(70.7% 0.165 254.624)"} />
+            <circle cx={290} cy={60} r={7} fill={"oklch(79.5% 0.184 86.047)"} />
+          </svg>
 
-        <div className={`w-[320px] flex justify-between -mt-4`}>
-          <div className="grid justify-items-start">
-            <p className="text-lg md:text-2xl">
-              {data.dep_iata ? data.dep_iata : data.dep_icao}
-            </p>
+          <div className={`w-[320px] flex justify-between `}>
+            <div className="grid justify-items-start">
+              <p className="text-xl md:text-3xl">
+                {data.dep_iata ? data.dep_iata : data.dep_icao}
+              </p>
+            </div>
+            <div className="grid justify-items-center h-[25px] -mt-6 text-blue-300">
+              <p className="text-[27px]">{progress.total}</p>
+              <p className="text-[17px]">
+                {progress.status
+                  ? `${progress.status} ${progress.rem}`
+                  : `${progress.rem} left`}
+              </p>
+            </div>
+            <div className="grid justify-items-end">
+              <p className="mr-4 text-xl md:text-3xl">
+                {data.arr_iata ? data.arr_iata : data.arr_icao}
+              </p>
+            </div>{" "}
           </div>
-          <div className="grid justify-items-center h-[25px] -mt-6 text-blue-300">
-            <p className="text-[23px]">{progress.total}</p>
-            <p className="text-[15px]">{`${progress.rem} left`}</p>
-          </div>
-          <div className="grid justify-items-end">
-            <p className="mr-4 text-lg md:text-2xl">
-              {data.arr_iata ? data.arr_iata : data.arr_icao}
-            </p>
-          </div>{" "}
         </div>
       </section>
     );

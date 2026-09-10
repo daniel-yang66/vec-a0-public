@@ -9,7 +9,8 @@ export default async function LLMCall(msgs) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "nvidia/nemotron-3.5-lightning",
+        // model: "nvidia/nemotron-3.5-lightning",
+        model: "google/gemini-3.8-flash",
         messages: msgs,
         reasoning: { enabled: true },
       }),
@@ -21,4 +22,5 @@ export default async function LLMCall(msgs) {
   const reasoning = result.choices[0].message.reasoning_details;
 
   return { msg: message, rsn: reasoning };
+  // return result;
 }

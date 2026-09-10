@@ -47,9 +47,9 @@ export function ConvertWeather(clouds, codes, info, tz, time) {
 
   let condition = "Fair";
   let symbol = night ? (
-    <WiNightClear className="text-[55px] text-blue-400" />
+    <WiNightClear className="text-[60px] text-blue-400" />
   ) : (
-    <WiDaySunny className="text-[55px] text-blue-400" />
+    <WiDaySunny className="text-[60px] text-blue-400" />
   );
 
   clouds.some((cloud) => {
@@ -67,19 +67,19 @@ export function ConvertWeather(clouds, codes, info, tz, time) {
       if (cloud.type === "SCT" || cloud.type === "FEW") {
         condition = "Fair";
         symbol = night ? (
-          <WiNightAltPartlyCloudy className="text-[55px] text-blue-400" />
+          <WiNightAltPartlyCloudy className="text-[60px] text-blue-400" />
         ) : (
-          <WiDaySunnyOvercast className="text-[55px] text-blue-400" />
+          <WiDaySunnyOvercast className="text-[60px] text-blue-400" />
         );
       } else if (cloud.type === "OVC" || cloud.type === "VV") {
         condition = "Overcast";
-        symbol = <WiCloudy className="text-[55px] text-blue-400" />;
+        symbol = <WiCloudy className="text-[60px] text-blue-400" />;
       } else if (cloud.type === "BKN") {
         condition = "Cloudy";
         symbol = night ? (
-          <WiNightAltCloudy className="text-[55px] text-blue-400" />
+          <WiNightAltCloudy className="text-[60px] text-blue-400" />
         ) : (
-          <WiDayCloudy className="text-[55px] text-blue-400" />
+          <WiDayCloudy className="text-[60px] text-blue-400" />
         );
       }
     });
@@ -92,9 +92,9 @@ export function ConvertWeather(clouds, codes, info, tz, time) {
       ) {
         condition = code.value;
         symbol = night ? (
-          <WiNightRain className="text-[55px] text-blue-400" />
+          <WiNightRain className="text-[60px] text-blue-400" />
         ) : (
-          <WiDayRain className="text-[55px] text-blue-400" />
+          <WiDayRain className="text-[60px] text-blue-400" />
         );
       } else if (
         code.repr.includes("SN") ||
@@ -106,9 +106,9 @@ export function ConvertWeather(clouds, codes, info, tz, time) {
       ) {
         condition = code.value;
         symbol = night ? (
-          <WiNightSnow className="text-[55px] text-blue-400" />
+          <WiNightSnow className="text-[60px] text-blue-400" />
         ) : (
-          <WiDaySnow className="text-[55px] text-blue-400" />
+          <WiDaySnow className="text-[60px] text-blue-400" />
         );
       } else if (
         code.repr.includes("FG") ||
@@ -120,16 +120,16 @@ export function ConvertWeather(clouds, codes, info, tz, time) {
       ) {
         condition = code.value;
         symbol = night ? (
-          <WiNightFog className="text-[55px] text-blue-400" />
+          <WiNightFog className="text-[60px] text-blue-400" />
         ) : (
-          <WiDayFog className="text-[55px] text-blue-400" />
+          <WiDayFog className="text-[60px] text-blue-400" />
         );
       } else if (code.repr.includes("TS")) {
         condition = code.value;
         symbol = night ? (
-          <WiNightThunderstorm className="text-[55px] text-blue-400" />
+          <WiNightThunderstorm className="text-[60px] text-blue-400" />
         ) : (
-          <WiDayThunderstorm className="text-[55px] text-blue-400" />
+          <WiDayThunderstorm className="text-[60px] text-blue-400" />
         );
       }
     });

@@ -43,6 +43,8 @@ export default function All({ flightNo, route }) {
   const [agentContext, setAgentContext] = useState();
   const param = useRef({ flt: null, rt: null });
   const autoRefresh = useRef(false);
+  const [agentRefreshed, setAgentRefreshed] = useState("0");
+  const lastAgentRefresh = useRef(Date.now());
   const lastStationRefresh = useRef(Date.now());
   const loadingTracker = useRef(0);
   const stationRef = useRef({});
@@ -377,7 +379,7 @@ export default function All({ flightNo, route }) {
               />
             </div>
 
-            {agentContext ? <VecAgent context={agentContext} /> : <></>}
+            <VecAgent context={agentContext} refresh={agentRefreshed} />
 
             <FlightDetails
               unit={settings.unit}
@@ -389,6 +391,8 @@ export default function All({ flightNo, route }) {
               stationData={stationData}
               dark={settings.dark}
               refreshTracker={refreshTracker}
+              onSetAgentRefreshed={setAgentRefreshed}
+              agentRefresh={lastAgentRefresh.current}
               onSetAgentContext={setAgentContext}
             />
             {!settingsClose ? (

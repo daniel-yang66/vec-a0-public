@@ -22,6 +22,8 @@ export default function FlightDetails({
   stationData,
   dark,
   refreshTracker,
+  onSetAgentRefreshed,
+  agentRefresh,
   onSetAgentContext,
 }) {
   const [charts, setCharts] = useState();
@@ -127,8 +129,17 @@ export default function FlightDetails({
       } catch {
         Notify("Failed to get runway data", "err");
       }
+      if (
+        (refresh && (Date.now() - agentRefresh) / 60000 >= 5) ||
+        refreshTrackerInternal.current === 0
+      ) {
+        onSetAgentContext(dataStore);
+        agentRefresh = Date.now();
 
-      onSetAgentContext(dataStore);
+        if (refreshTrackerInternal.current > 0) {
+          onSetAgentRefreshed("1");
+        }
+      }
     } catch {
       Notify("Failed to get Departure and Arrival Airport Info", "err");
     } finally {
@@ -152,15 +163,13 @@ export default function FlightDetails({
       );
       refreshTrackerInternal.current = refreshTracker.current;
     } else {
-      if (!charts || !atis) {
-        GetDepArrInfo(
-          flight.dep_icao ? flight.dep_icao : flight.dep_iata,
-          flight.arr_icao ? flight.arr_icao : flight.arr_iata,
-          refresh,
-        );
-      }
+      GetDepArrInfo(
+        flight.dep_icao ? flight.dep_icao : flight.dep_iata,
+        flight.arr_icao ? flight.arr_icao : flight.arr_iata,
+        refresh,
+      );
     }
-  }, [flight, details, viewType, unit]);
+  }, [flight, viewType, unit]);
 
   if (!loading && details === "on") {
     return (

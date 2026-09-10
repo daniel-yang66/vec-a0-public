@@ -204,6 +204,25 @@ export function StatusOrProgress(
       DateTime.fromISO(inTime, { zone: "UTC" }).toSeconds() -
       DateTime.now().toSeconds();
 
+    let status = null;
+    const timeDep = TimeType(
+      flight.dep_actual_utc,
+      flight.dep_estimated_utc,
+      flight.dep_time_utc,
+    );
+
+    if (
+      (flight.dep_estimated_utc || flight.dep_time_utc) &&
+      DateTime.fromISO(timeDep.finalTime, { zone: "UTC" }).toSeconds() -
+        DateTime.now().toSeconds() >
+        0
+    ) {
+      timeRemaining =
+        DateTime.fromISO(timeDep.finalTime, { zone: "UTC" }).toSeconds() -
+        DateTime.now().toSeconds();
+      status = "Departs in";
+    }
+
     const pct = Math.min(
       100,
       Math.max(0, Math.round((1 - timeRemaining / timeTotal) * 100)),
@@ -225,6 +244,11 @@ export function StatusOrProgress(
         : "0m"
       : "--";
 
-    return { total: timeTotal, remaining: timeRemaining, pct: pct };
+    return {
+      total: timeTotal,
+      remaining: timeRemaining,
+      pct: pct,
+      status: status,
+    };
   }
 }
