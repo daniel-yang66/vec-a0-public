@@ -204,6 +204,11 @@ export function StatusOrProgress(
       DateTime.fromISO(inTime, { zone: "UTC" }).toSeconds() -
       DateTime.now().toSeconds();
 
+    const pct = Math.min(
+      100,
+      Math.max(0, Math.round((1 - timeRemaining / timeTotal) * 100)),
+    );
+
     let status = null;
     const timeDep = TimeType(
       flight.dep_actual_utc,
@@ -222,11 +227,6 @@ export function StatusOrProgress(
         DateTime.now().toSeconds();
       status = "Departs in";
     }
-
-    const pct = Math.min(
-      100,
-      Math.max(0, Math.round((1 - timeRemaining / timeTotal) * 100)),
-    );
 
     timeTotal = timeTotal
       ? timeTotal >= 0
