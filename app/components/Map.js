@@ -214,7 +214,7 @@ export default memo(function Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/dark-v11",
       projection: "globe",
-      center: [-114, 33],
+      center: [-165, 33],
       zoom: 1.4,
       attributionControl: true,
     });
@@ -1064,8 +1064,8 @@ export default memo(function Map({
           planeCoords ? planeCoords.lon : depCoords.lon,
           planeCoords ? planeCoords.lat : depCoords.lat,
         ],
-        speed: 0.5,
-        zoom: 5,
+        speed: 0.7,
+        zoom: 1.6,
       });
       lastFlightId.current = flight.flight_icao;
     }

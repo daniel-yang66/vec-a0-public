@@ -19,6 +19,8 @@ export function AircraftType(txt) {
     return "narrowbody";
   } else if (txt.startsWith("B74") || txt.startsWith("A38")) {
     return "jumbo_jet";
+  } else if (txt.startsWith("E") || txt.startsWith("CR")) {
+    return "regional_jet";
   } else if (
     txt.startsWith("A30") ||
     (txt.startsWith("A") && txt >= "A33") ||

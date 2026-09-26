@@ -50,7 +50,7 @@ export default function FlightTimes({ data, tz, wx }) {
           <div className="flex gap-4 items-center">
             <div className="flex items-center gap-2">
               <FaPlaneDeparture
-                className={`md:text-[30px] text-[24px] text-blue-400`}
+                className={`md:text-[30px] text-[24px] text-blue-400 shrink-0`}
               />
               <p className="text-3xl text-blue-300">{`${timeData.out_status.formatTime}`}</p>
               <p className="text-slate-400 text-lg">{`Terminal ${
@@ -91,7 +91,7 @@ export default function FlightTimes({ data, tz, wx }) {
         <div className="flex gap-4 items-center">
           <div className="flex items-center gap-2">
             <FaPlaneArrival
-              className={`md:text-[30px] text-[24px] text-yellow-500`}
+              className={`md:text-[30px] text-[24px] text-yellow-500 shrink-0`}
             />
             <p className="text-3xl text-blue-300">{`${timeData.in_status.formatTime}`}</p>
             <p className="text-slate-400 text-lg">{`Terminal ${

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DateTime } from "luxon";
 
 export default function Notams({ notams }) {
   const [search, setSearch] = useState();
@@ -9,12 +8,9 @@ export default function Notams({ notams }) {
 
   useEffect(() => {
     if (!notams) return;
-    const utcFormat = DateTime.now().setZone("UTC").toFormat("yyyyMMddHHmm");
 
     let readNotams = [];
     const active = notams.filter((item, i) => {
-      const start = item.effective ? item.effective : null;
-      const end = item.expiration ? item.expiration : null;
       const first_term = item.body.split(" ")[0];
 
       const body =
@@ -22,17 +18,10 @@ export default function Notams({ notams }) {
           ? item.body.split(" ").slice(1).join(" ")
           : item.body;
       const criteria = search
-        ? ((start <= utcFormat && end >= utcFormat) ||
-            (!start && end >= utcFormat) ||
-            (start <= utcFormat && !end)) &&
-          !readNotams.includes(
+        ? !readNotams.includes(
             `${body}-${item.effective}-${item.expiration}`,
-          ) &&
-          item.body.toUpperCase().includes(search)
-        : ((start <= utcFormat && end >= utcFormat) ||
-            (!start && end >= utcFormat) ||
-            (start <= utcFormat && !end)) &&
-          !readNotams.includes(`${body}-${item.effective}-${item.expiration}`);
+          ) && item.body.toUpperCase().includes(search)
+        : !readNotams.includes(`${body}-${item.effective}-${item.expiration}`);
 
       readNotams.push(`${body}-${item.effective}-${item.expiration}`);
       return criteria;
@@ -40,10 +29,15 @@ export default function Notams({ notams }) {
     setActiveNotams(active);
   }, [search, notams]);
 
-  if (!notams) return <div className="w-full h-full overflow-auto"></div>;
+  if (!notams)
+    return (
+      <div className="w-full h-full overflow-auto grid items-center justify-items-center text-2xl font-bold">
+        No NOTAMS Available
+      </div>
+    );
   else {
     return (
-      <div className="w-full h-full overflow-auto">
+      <div className="w-full h-full overflow-auto ">
         <input
           onChange={(e) => setSearch(e.target.value.toUpperCase().trim())}
           className="w-4/5 p-2  rounded-lg bg-blue-400 font-semibold text-slate-900 mb-4"

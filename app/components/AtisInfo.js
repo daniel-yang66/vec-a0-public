@@ -1,5 +1,10 @@
 export default function AtisInfo({ atis }) {
-  if (!atis) return <div className="w-full h-full overflow-auto"></div>;
+  if (!atis)
+    return (
+      <div className="w-full h-full overflow-auto grid items-center justify-items-center text-2xl font-bold">
+        No ATIS Available
+      </div>
+    );
   else {
     return (
       <div className="w-full h-full overflow-auto">
