@@ -91,7 +91,7 @@ export default function FlightSummary({ data, weather, tz, unit }) {
           <></>
         )}
 
-        <div className="mt-4">
+        <div className="mt-6">
           <div className="w-[335px] flex justify-between -ml-4 -mb-14">
             <div className="inline-flex items-top">
               {symbols ? symbols.origin : <></>}
