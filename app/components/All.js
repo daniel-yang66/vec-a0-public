@@ -142,6 +142,8 @@ export default function All({ flightNo, route }) {
       setFlight(null);
       setFlightNum(null);
       setStationData(null);
+      setAgentContext(undefined);
+      setAgentRefreshed("0");
       startLoading();
     }
 

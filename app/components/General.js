@@ -289,7 +289,7 @@ export default function General({ stationData, unit, targetTime }) {
                       </div>
                       <p className="text-slate-300 text-xs">
                         {period.type !== "FROM"
-                          ? `${period.type}${period.probability ? (period.probability > 1 ? `${period.probability}%` : `${Math.round(period.probability * 100)}%`) : ""}`
+                          ? `${period.type}${Number.isFinite(Number(period.probability)) ? (Number(period.probability) > 1 ? `${period.probability}%` : `${Math.round(Number(period.probability) * 100)}%`) : ""}`
                           : ""}
                       </p>
                     </div>

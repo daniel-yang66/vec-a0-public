@@ -36,6 +36,7 @@ export default function FlightDetails({
   const [loading, setLoading] = useState(false);
   const loadingTracker = useRef(0);
   const refreshTrackerInternal = useRef(0);
+  const flightTrackerInternal = useRef();
 
   const GetSliderPositionAirport = () => {
     return airport === "dep" ? 0 : 1;
@@ -131,10 +132,13 @@ export default function FlightDetails({
       }
       if (
         (refresh && (Date.now() - agentRefresh) / 60000 >= 5) ||
-        refreshTrackerInternal.current === 0
+        refreshTrackerInternal.current === 0 ||
+        flightTrackerInternal.current !==
+          `${flight.flight_icao} ${flight.dep_time_ts}`
       ) {
         onSetAgentContext(dataStore);
         agentRefresh = Date.now();
+        flightTrackerInternal.current = `${flight.flight_icao} ${flight.dep_time_ts}`;
 
         if (refreshTrackerInternal.current > 0) {
           onSetAgentRefreshed("1");
@@ -169,7 +173,7 @@ export default function FlightDetails({
         refresh,
       );
     }
-  }, [flight, viewType, unit]);
+  }, [flight]);
 
   if (!loading && details === "on") {
     return (
