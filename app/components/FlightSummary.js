@@ -76,7 +76,7 @@ export default function FlightSummary({ data, weather, tz, unit }) {
   if (data && (weather ? weather.origin || weather.destination : false)) {
     return (
       <section
-        className={`relative flex flex-col items-center justify-center h-[23vh] min-[768px]:h-[20vh] min-[1000px]:h-[28vh] lmd:h-[25vh]! min-[768px]:w-[51vw] min-[1000px]:w-[38vw] lmd:w-full! bg-linear-to-br from-slate-950 to-blue-950 rounded-lg p-2 border-2 border-solid border-blue-900 text-slate-300`}
+        className={`relative flex flex-col items-center justify-center h-[23vh] min-[768px]:h-[20vh] min-[1000px]:h-[28vh] lmd:h-[25vh]! min-[768px]:w-[51vw] min-[1000px]:w-[38vw] lmd:w-full! bg-linear-to-br from-slate-950 to-blue-950 rounded-xl p-2 border-2 border-solid border-blue-900 text-slate-300`}
       >
         <p className={`absolute top-1 left-1 text-blue-400 text-xl`}>
           {airline.name}
