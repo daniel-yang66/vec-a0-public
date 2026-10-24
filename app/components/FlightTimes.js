@@ -19,15 +19,15 @@ export default function FlightTimes({ data, tz, wx }) {
     <section
       className={`min-[768px]:h-[20vh] min-[1000px]:h-[28vh] lmd:h-auto! lmd:flex-1 min-[768px]:w-[48vw] min-[1000px]:w-[40vw] lmd:w-full! flex flex-col gap-2 flex gap-4 text-sm md:text-md md:mr-2 text-slate-300 overflow-auto`}
     >
-      <div className="h-full p-2 rounded-lg flex flex-col gap-2 bg-blue-900 overflow-hidden">
+      <div className="h-full p-[5px] rounded-lg flex flex-col gap-2 bg-linear-to-br from-slate-900 to-blue-900 border-2 border-solid border-blue-800 overflow-hidden">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span
               className={`w-4 h-4 flex-none rounded-full ${timeData.out_status.color}`}
             ></span>
             <h3 className="text-slate-300 text-lg">
-              Departure{" "}
-              {`(${timeData.out_status.var.time.replace("+", "").replace("-", "")}${timeData.out_status.var.sign === "+" ? " late" : " early"})`}
+              Departure{" - "}
+              {`${timeData.out_status.var.time.replace("+", "").replace("-", "")}${timeData.out_status.var.sign === "+" ? " late" : " early"}`}
             </h3>
           </div>
           <div className="flex items-center gap-2">
@@ -61,15 +61,15 @@ export default function FlightTimes({ data, tz, wx }) {
         </div>
       </div>
 
-      <div className="h-full p-2 rounded-lg flex flex-col gap-2 bg-blue-900 overflow-hidden">
+      <div className="h-full p-[5px] rounded-lg flex flex-col gap-2 bg-linear-to-br from-slate-900 to-blue-900 border-2 border-solid border-blue-800 overflow-hidden">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span
               className={`w-4 h-4 flex-none rounded-full ${timeData.in_status.color}`}
             ></span>
             <h3 className="text-slate-300 text-lg">
-              Arrival{" "}
-              {`(${timeData.in_status.var.time.replace("+", "").replace("-", "")}${timeData.in_status.var.sign === "+" ? " late" : " early"})`}
+              Arrival{" - "}
+              {`${timeData.in_status.var.time.replace("+", "").replace("-", "")}${timeData.in_status.var.sign === "+" ? " late" : " early"}`}
             </h3>
           </div>
           <div className="flex items-center gap-2">
