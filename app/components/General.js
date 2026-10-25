@@ -225,7 +225,7 @@ export default function General({ stationData, unit, targetTime }) {
             </>
           ) : (
             <div className="flex gap-4 overflow-auto w-[96%]">
-              {stationData.fcast.forecast.map((period, i) => {
+              {stationData.fcast.forecast.map((period, ind) => {
                 let ws;
                 let wg;
                 let wd;
