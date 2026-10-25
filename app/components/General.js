@@ -226,8 +226,77 @@ export default function General({ stationData, unit, targetTime }) {
           ) : (
             <div className="flex gap-4 overflow-auto w-[96%]">
               {stationData.fcast.forecast.map((period, i) => {
-                let ws = period.wind_speed ? period.wind_speed.value : "--";
-                let wg = period.wind_gust ? period.wind_gust.value : "--";
+                let ws;
+                let wg;
+                let wd;
+                let clouds;
+                let codes;
+                let vis;
+
+                if (!period.wind_speed) {
+                  for (let index = ind - 1; index >= 0; index--) {
+                    const period = stationData.fcast.forecast[index];
+                    if (period.wind_speed && period.type === "FROM") {
+                      ws = period.wind_speed.value;
+                      wg = period.wind_gust ? period.wind_gust.value : "--";
+                      wd =
+                        period.wind_direction &&
+                        period.wind_direction.repr === "VRB"
+                          ? "VRB"
+                          : period.wind_direction && period.wind_direction.value
+                            ? period.wind_direction.value
+                            : "--";
+                      break;
+                    }
+                  }
+                } else {
+                  ws = period.wind_speed.value;
+                  wg = period.wind_gust ? period.wind_gust.value : "--";
+                  wd =
+                    period.wind_direction &&
+                    period.wind_direction.repr === "VRB"
+                      ? "VRB"
+                      : period.wind_direction && period.wind_direction.value
+                        ? period.wind_direction.value
+                        : "--";
+                }
+                if (period.clouds.length === 0 && ind !== 0) {
+                  for (let index = ind - 1; index >= 0; index--) {
+                    const period = stationData.fcast.forecast[index];
+                    if (period.clouds.length > 0 && period.type === "FROM") {
+                      clouds = period.clouds;
+
+                      break;
+                    }
+                  }
+                } else {
+                  clouds = period.clouds;
+                }
+                if (!period.visibility) {
+                  for (let index = ind - 1; index >= 0; index--) {
+                    const period = stationData.fcast.forecast[index];
+                    if (period.visibility && period.type === "FROM") {
+                      vis = period.visibility ? period.visibility.repr : "--";
+
+                      break;
+                    }
+                  }
+                } else {
+                  vis = period.visibility ? period.visibility.repr : "--";
+                }
+                if (!period.wx_codes) {
+                  for (let index = ind - 1; index >= 0; index--) {
+                    const period = stationData.fcast.forecast[index];
+                    if (period.wx_codes && period.type === "FROM") {
+                      codes = period.wx_codes;
+
+                      break;
+                    }
+                  }
+                } else {
+                  codes = period.wx_codes;
+                }
+
                 const wUnit = wxSummary.windUnit;
                 const wind = ConvertWind(ws, wg, wUnit, unit);
                 const start = DateTime.fromISO(
@@ -253,8 +322,8 @@ export default function General({ stationData, unit, targetTime }) {
                 }
 
                 const summary = ConvertWeather(
-                  period.clouds,
-                  period.wx_codes,
+                  clouds,
+                  codes,
                   stationData.wx,
                   stationData.tz,
                   `${String(start.hour).padStart(2, "0")}:${String(
@@ -264,7 +333,7 @@ export default function General({ stationData, unit, targetTime }) {
 
                 return (
                   <div
-                    key={i}
+                    key={ind}
                     className={`w-1/2 md:w-[42%] flex flex-none flex-col gap-2 bg-blue-950 rounded-lg p-2 justify-center items-center overflow-auto ${border ? "border-[5px] border-blue-300 border-solid" : ""}`}
                   >
                     <div className="flex items-center gap-2">
@@ -289,7 +358,7 @@ export default function General({ stationData, unit, targetTime }) {
                       </div>
                       <p className="text-slate-300 text-xs">
                         {period.type !== "FROM"
-                          ? `${period.type}${Number.isFinite(Number(period.probability)) ? (Number(period.probability) > 1 ? `${period.probability}%` : `${Math.round(Number(period.probability) * 100)}%`) : ""}`
+                          ? `${period.type}${Number.isFinite(period.probability) ? (Number(period.probability) > 1 ? ` ${period.probability}%` : ` ${Math.round(Number(period.probability) * 100)}%`) : ""}`
                           : ""}
                       </p>
                     </div>
@@ -312,16 +381,16 @@ export default function General({ stationData, unit, targetTime }) {
                         ></span>
                         <p className="text-sm">{period.flight_rules}</p>
                       </div>
-                      <p>{`${unit === "imp" || unit === "av" || summary.ceiling === "--" ? summary.ceiling : Number(summary.ceiling.replace(",", "")) * 0.3048} ${unit === "imp" || unit === "av" ? "ft" : "m"} / ${period.visibility ? period.visibility.repr : "--"} ${stationData.wx.units.visibility}`}</p>
+
+                      <p>{`${unit === "imp" || unit === "av" || summary.ceiling === "--" ? summary.ceiling : Number(summary.ceiling.replace(",", "")) * 0.3048} ${unit === "imp" || unit === "av" ? "ft" : "m"} / ${vis} ${stationData.wx.units.visibility}`}</p>
                     </div>
 
                     <div className="relative h-14 w-full px-2 rounded-lg flex gap-2 items-end bg-blue-900">
                       <p className="absolute top-1 left-1 text-sm text-slate-400">
                         Wind
                       </p>
-                      <p className="text-[15px]">{`${wind.wg !== "--" ? `${wind.ws ? wind.ws : "--"}/${wind.wg ? wind.wg : "--"}` : `${wind.ws ? wind.ws : "--"}`} ${unit === "av" || unit === "imp" ? (unit === "av" ? "kt" : "mph") : "kph"}, ${period.wind_direction && period.wind_direction.repr === "VRB" ? "VRB" : period.wind_direction && period.wind_direction.value ? `${period.wind_direction.value}\xB0` : "--"}`}</p>
-                      {period.wind_direction &&
-                      period.wind_direction.repr == "VRB" ? (
+                      <p className="text-[15px]">{`${wind.wg !== "--" ? `${wind.ws ? wind.ws : "--"}/${wind.wg ? wind.wg : "--"}` : `${wind.ws ? wind.ws : "--"}`} ${unit === "av" || unit === "imp" ? (unit === "av" ? "kt" : "mph") : "kph"}, ${wd}${wd !== "VRB" && wd !== "--" ? "\xB0" : ""}`}</p>
+                      {wd == "VRB" ? (
                         <TbArrowsRandom
                           className={"text-blue-400 text-[15px] md:text-[22px]"}
                         />
@@ -329,7 +398,7 @@ export default function General({ stationData, unit, targetTime }) {
                         <LuArrowUp
                           className={"text-blue-400 text-[15px] md:text-[20px]"}
                           style={{
-                            rotate: `${period.wind_direction && period.wind_direction.value ? period.wind_direction.value + 180 : 0}deg`,
+                            rotate: `${wd !== "--" ? wd + 180 : 0}deg`,
                           }}
                         />
                       )}
