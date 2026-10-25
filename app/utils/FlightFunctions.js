@@ -46,11 +46,12 @@ function DayStatus(time, lat, lon, tz) {
 
 export function FormatTimeDiff(seconds) {
   if (seconds > 3600 || seconds < -3600) {
-    const hours = Math.floor(seconds / 3600);
+    const hours =
+      seconds >= 0 ? Math.floor(seconds / 3600) : Math.ceil(seconds / 3600);
     const remainder = Math.floor((seconds - hours * 3600) / 60);
 
     return {
-      time: `${hours ? hours : "--"}h ${remainder ? remainder : "--"}m`,
+      time: `${hours ? hours : "--"}h ${remainder ? Math.abs(remainder) : "--"}m`,
       sign: seconds > 0 ? "+" : "",
     };
   } else {
