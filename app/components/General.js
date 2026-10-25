@@ -300,14 +300,19 @@ export default function General({ stationData, unit, targetTime }) {
                 const wUnit = wxSummary.windUnit;
                 const wind = ConvertWind(ws, wg, wUnit, unit);
                 const start = DateTime.fromISO(
-                  period.transition_start
-                    ? period.transition_start.dt
+                  ind === 0
+                    ? stationData.fcast.start_time.dt
                     : period.start_time.dt,
                   { zone: stationData.tz },
                 );
-                const end = DateTime.fromISO(period.end_time.dt, {
-                  zone: stationData.tz,
-                });
+                const end = DateTime.fromISO(
+                  ind === 0
+                    ? stationData.fcast.end_time.dt
+                    : period.end_time.dt,
+                  {
+                    zone: stationData.tz,
+                  },
+                );
 
                 let border = false;
                 if (
